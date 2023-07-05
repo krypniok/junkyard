@@ -1,0 +1,7 @@
+build-essentials
+libusb libusb-dev
+
+libsdl libsdl-dev
+
+php-sdl
+php-opengl

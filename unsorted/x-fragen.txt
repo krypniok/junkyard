@@ -1,0 +1,225 @@
+$questions = array(
+    array("Frage" => "Welche Summe erhält man, wenn man die Summe von 8 und 6 durch 2 dividiert?", "Optionen" => array("A" => 8, "B" => 9, "C" => 10), "Antwort" => "B"),
+    array("Frage" => "Welche Summe erhält man, wenn man 10 mit 4 multipliziert?", "Optionen" => array("A" => 40, "B" => 50, "C" => 60), "Antwort" => "A"),
+    array("Frage" => "Was ist die Formel für die Oberfläche eines Zylinders?", "Optionen" => array("A" => "2πr²", "B" => "πr²", "C" => "πr"), "Antwort" => "B"),
+    array("Frage" => "Welchen Wert hat die Exponentialfunktion für x=1?", "Optionen" => array("A" => 0, "B" => 1, "C" => 2), "Antwort" => "B"),
+    array("Frage" => "Welche Summe erhält man, wenn man 11 minus 4 subtrahiert?", "Optionen" => array("A" => 7, "B" => 8, "C" => 9), "Antwort" => "A"),
+    array("Frage" => "Was ist die Definition von Impuls?", "Optionen" => array("A" => "Eine Kraft, die ein Objekt in Bewegung versetzt", "B" => "Eine Kraft, die ein Objekt beschleunigt", "C" => "Eine Kraft, die ein Objekt abbremst"), "Antwort" => "A"),
+    array("Frage" => "Welchen Wert erhält man, wenn man die Summe von 2 und 4 mit 3 multipliziert?", "Optionen" => array("A" => 10, "B" => 12, "C" => 14), "Antwort" => "A"),
+    array("Frage" => "Was ist die Umkehrfunktion einer Quadratwurzel?", "Optionen" => array("A" => "Quadrat", "B" => "Wurzel", "C" => "Exponentialfunktion"), "Antwort" => "A")
+);
+
+$questions = array(
+    array("Frage" => "Welche Summe erhält man, wenn man die Summe von 8 und 6 durch 2 dividiert?", "Optionen" => array("A" => 8, "B" => 9, "C" => 10), "Antwort" => "B", "Schwierigkeit" => 50),
+    array("Frage" => "Welche Summe erhält man, wenn man 10 mit 4 multipliziert?", "Optionen" => array("A" => 40, "B" => 50, "C" => 60), "Antwort" => "A", "Schwierigkeit" => 50),
+    array("Frage" => "Was ist die Formel für die Oberfläche eines Zylinders?", "Optionen" => array("A" => "2πr²", "B" => "πr²", "C" => "πr"), "Antwort" => "B", "Schwierig
+
+Soweit so gut. Die Schwierigkeit soll aber anzeigen wie schwer die frage ist.
+
+keit" => 70),
+    array("Frage" => "Welchen Wert hat die Exponentialfunktion für x=1?", "Optionen" => array("A" => 0, "B" => 1, "C" => 2), "Antwort" => "B", "Schwierigkeit" => 80),
+    array("Frage" => "Welche Summe erhält man, wenn man 11 minus 4 subtrahiert?", "Optionen" => array("A" => 7, "B" => 8, "C" => 9), "Antwort" => "A", "Schwierigkeit" => 50),
+    array("Frage" => "Was ist die Definition von Impuls?", "Optionen" => array("A" => "Eine Kraft, die ein Objekt in Bewegung versetzt", "B" => "Eine Kraft, die ein Objekt beschleunigt", "C" => "Eine Kraft, die ein Objekt abbremst"), "Antwort" => "A", "Schwierigkeit" => 70),
+    array("Frage" => "Welchen Wert erhält man, wenn man die Summe von 2 und 4 mit 3 multipliziert?", "Optionen" => array("A" => 10, "B" => 12, "C" => 14), "Antwort" => "A", "Schwierigkeit" => 50),
+    array("Frage" => "Was ist die Umkehrfunktion einer Quadratwurzel?", "Optionen" => array("A" => "Quadrat", "B" => "Wurzel", "C" => "Exponentialfunktion"), "Antwort" => "A", "Schwierigkeit" => 80)
+);
+
+$questions = array(
+    array("Frage" => "Welche Summe erhält man, wenn man die Summe von 8 und 6 durch 2 dividiert?", "Optionen" => array("A" => 8, "B" => 9, "C" => 10), "Antwort" => "B"),
+    array("Frage" => "Welche Summe erhält man, wenn man 10 mit 4 multipliziert?", "Optionen" => array("A" => 40, "B" => 50, "C" => 60), "Antwort" => "A"),
+    array("Frage" => "Was ist die Formel für die Oberfläche eines Zylinders?", "Optionen" => array("A" => "2πr²", "B" => "πr²", "C" => "πr"), "Antwort" => "B"),
+    array("Frage" => "Welchen Wert hat die Exponentialfunktion für x=1?", "Optionen" => array("A" => 0, "B" => 1, "C" => 2), "Antwort" => "B"),
+    array("Frage" => "Welche Summe erhält man, wenn man 11 minus 4 subtrahiert?", "Optionen" => array("A" => 7, "B" => 8, "C" => 9), "Antwort" => "A"),
+    array("Frage" => "Was ist die Definition von Impuls?", "Optionen" => array("A" => "Eine Kraft, die ein Objekt in Bewegung versetzt", "B" => "Eine Kraft, die ein Objekt beschleunigt", "C" => "Eine Kraft, die ein Objekt abbremst"), "Antwort" => "A"),
+    array("Frage" => "Welchen Wert erhält man, wenn man die Summe von 2 und 4 mit 3 multipliziert?", "Optionen" => array("A" => 10, "B" => 12, "C" => 14), "Antwort" => "A"),
+    array("Frage" => "Was ist die Umkehrfunktion einer Quadratwurzel?", "Optionen" => array("A" => "Quadrat", "B" => "Wurzel", "C" => "Exponentialfunktion"), "Antwort" => "A")
+);
+
+$questions = [
+    ['question' => 'Welche Farbe hat das Meer?', 'answers' => ['a' => 'Rot', 'b' => 'Grün', 'c' => 'Blau'], 'correct_answer' => 'c'], 
+    ['question' => 'Welches Tier hat einen Schwanz?', 'answers' => ['a' => 'Katze', 'b' => 'Hund', 'c' => 'Elefant'], 'correct_answer' => 'b'], 
+    ['question' => 'Welches Tier hat Flügel?', 'answers' => ['a' => 'Katze', 'b' => 'Hund', 'c' => 'Vogel'], 'correct_answer' => 'c'], 
+    ['question' => 'Welche ist die größte Stadt in Deutschland?', 'answers' => ['a' => 'Berlin', 'b' => 'Hamburg', 'c' => 'München'], 'correct_answer' => 'a'], 
+    ['question' => 'Welches ist der höchste Berg in Europa?', 'answers' => ['a' => 'Mont Blanc', 'b' => 'Mount Elbrus', 'c' => 'Mount Olympus'], 'correct_answer' => 'a'], 
+    ['question' => 'Welches ist der längste Fluss in Europa?', 'answers' => ['a' => 'Rhein', 'b' => 'Donau', 'c' => 'Volga'], 'correct_answer' => 'b'], 
+    ['question' => 'Welches ist der größte See in Europa?', 'answers' => ['a' => 'Kaspisches Meer', 'b' => 'Genfer See', 'c' => 'Balaton'], 'correct_answer' => 'a'], 
+    ['question' => 'Welches ist der größte Kontinent?', 'answers' => ['a' => 'Afrika', 'b' => 'Asien', 'c' => 'Europa'], 'correct_answer' => 'b'], 
+    ['question' => 'Welches ist der größte Ozean?', 'answers' => ['a' => 'Pazifik', 'b' => 'Atlantik', 'c' => 'Indischer Ozean'], 'correct_answer' => 'a'], 
+    // ...
+    ['question' => 'Welches ist die höchste Erhebung der Erde?', 'answers' => ['a' => 'Mount Everest', 'b' => 'Kilimandscharo', 'c' => 'K2'], 'correct_answer' => 'a'],
+];
+
+$questions = array(
+	"Welche Farbe hat der Himmel? a) Rot b) Blau c) Grün d) Gelb", "b",
+	"Wie viele Kontinente gibt es? a) 4 b) 5 c) 6 d) 7", "b",
+	"Wie lautet die korrekte Schreibweise der Zahl 'zehn'? a) 10 b) Zehn c) Zhen d) Tzen", "a",
+	"Welche Farbe hat ein Fuchs? a) Blau b) Rot c) Braun d) Grau", "c",
+	"Welches Gas ist das wichtigste in unserer Atmosphäre? a) Helium b) Stickstoff c) Sauerstoff d) Argon", "b",
+	"Woher kommt das Wort 'Computer'? a) Griechisch b) Lateinisch c) Deutsch d) Englisch", "d",
+	"Was ist der Unterschied zwischen einer Katze und einem Hund? a) Größe b) Aussehen c) Verhalten d) Ernährung", "c",
+	"Wie heißt der längste Fluss der Welt? a) Amazonas b) Nil c) Rhein d) Missouri", "a",
+	"Wie viele Planeten gibt es im Sonnensystem? a) 8 b) 9 c) 10 d) 11", "a",
+	"Wie nennt man eine Gruppe von Fischen? a) Schwarm b) Rudel c) Herde d) Schule", "a");
+Ja und jetzt noch die Auswahlmöglichkeiten als eigenes Element.
+
+$questions = array(
+	array("Frage" => "Welche Farbe hat der Himmel?", "A" => "Rot", "B" => "Blau", "C" => "Grün", "D" => "Gelb", "Answer" => "B"),
+	array("Frage" => "Wie viele Kontinente gibt es?", "A" => "4", "B" => "5", "C" => "6", "D" => "7", "Answer" => "B"),
+	array("Frage" => "Wie lautet die korrekte Schreibweise der Zahl 'zehn'?", "A" => "10", "B" => "Zehn", "C" => "Zhen", "D" => "Tzen", "Answer" => "A"),
+	array("Frage" => "Welche Farbe hat ein Fuchs?", "A" => "Blau", "B" => "Rot", "C" => "Braun", "D" => "Grau", "Answer" => "C"),
+	array("Frage" => "Welches Gas ist das wichtigste in unserer Atmosphäre?", "A" => "Helium", "B" => "Stickstoff", "C" => "Sauerstoff", "D" => "Argon", "Answer" => "B"),
+	array("Frage" => "Woher kommt das Wort 'Computer'?", "A" => "Griechisch", "B" => "Lateinisch", "C" => "Deutsch", "D" => "Englisch", "Answer" => "D"),
+	array("Frage" => "Was ist der Unterschied zwischen einer Katze und einem Hund?", "A" => "Größe", "B" => "Aussehen", "C" => "Verhalten", "D" => "Ernährung", "Answer" => "C"),
+	array("Frage" => "Wie heißt der längste Fluss der Welt?", "A" => "Amazonas", "B" => "Nil", "C" => "Rhein", "D" => "Missouri", "Answer" => "A"),
+	array("Frage" => "Wie viele Planeten gibt es im Sonnensystem?", "A" => "8", "B" => "9", "C" => "10", "D" => "11", "Answer" => "A"),
+	array("Frage" => "Wie nennt man eine Gruppe von Fischen?", "A" => "Schwarm", "B" => "Rudel", "C" => "Herde", "D" => "Schule", "Answer" => "A")
+);
+
+Fast Perfekt! Erweitere es auf 100 Fragen, jede ein unikat.
+
+$questions = array(
+	array("Frage" => "Welche Farbe hat der Himmel?", "A" => "Rot", "B" => "Blau", "C" => "Grün", "D" => "Gelb", "Answer" => "B"),
+	array("Frage" => "Wie viele Kontinente gibt es?", "A" => "4", "B" => "5", "C" => "6", "D" => "7", "Answer" => "B"),
+	array("Frage" => "Wie lautet die korrekte Schreibweise der Zahl 'zehn'?", "A" => "10", "B" => "Zehn", "C" => "Zhen", "D" => "Tzen", "Answer" => "A"),
+	array("Frage" => "Welche Farbe hat ein Fuchs?", "A" => "Blau", "B" => "Rot", "C" => "Braun", "D" => "Grau", "Answer" => "C"),
+	array("Frage" => "Welches Gas ist das wichtigste in unserer Atmosphäre?", "A" => "Helium", "B" => "Stickstoff", "C" => "Sauerstoff", "D" => "Argon", "Answer" => "B"),
+	array("Frage" => "Woher kommt das Wort 'Computer'?", "A" => "Griechisch", "B" => "Lateinisch", "C" => "Deutsch", "D" => "Englisch", "Answer" => "D"),
+	array("Frage" => "Was ist der Unterschied zwischen einer Katze und einem Hund?", "A" => "Größe", "B" => "Aussehen", "C" => "Verhalten", "D" => "Ernährung", "Answer" => "C"),
+	array("Frage" => "Wie heißt der längste Fluss der Welt?", "A" => "Amazonas", "B" => "Nil", "C" => "Rhein", "D" => "Missouri", "Answer" => "A"),
+	array("Frage" => "Wie viele Planeten gibt es im Sonnensystem?", "A" => "8", "B" => "9", "C" => "10", "D" => "11", "Answer" => "A"),
+	array("Frage" => "Wie nennt man eine Gruppe von Fischen?", "A" => "Schwarm", "B" => "Rudel", "C" => "Herde", "D" => "Schule", "Answer" => "A"),
+	array("Frage" => "Wie heißt die Hauptstadt von Italien?", "A" => "Rom", "B" => "Berlin", "C" => "Paris", "D" => "London", "Answer" => "A"),
+	array("Frage" => "Welcher ist der größte Planet des Sonnensystems?", "A" => "Jupiter", "B" => "Neptun", "C" => "Uranus", "D" => "Saturn", "Answer" => "A"),
+	array("Frage" => "Wie lautet die größte Stadt Deutschlands?", "A" => "München", "B" => "Köln", "C" => "Berlin", "D" => "Hamburg", "Answer" => "C"),
+	array("Frage" => "Welches Tier ist das größte Säugetier der Erde?", "A" => "Elefant", "B" => "Blauwal", "C" => "Giraffe", "D" => "Bär", "Answer" => "B"),
+	array("Frage" => "Wie nennt man die Wissenschaft, die sich mit der Erforschung der Erde beschäftigt?", "A" => "Astronomie", "B" => "Geologie", "C" => "Biologie", "D" => "Meteorologie", "Answer" => "B"),
+
+
+
+$questions = array(
+    array("Frage" => "Welche Summe erhält man, wenn man die Summe von 8 und 6 durch 2 dividiert?", "Optionen" => array("A" => 8, "B" => 9, "C" => 10), "Antwort" => "B"),
+    array("Frage" => "Welche Summe erhält man, wenn man 10 mit 4 multipliziert?", "Optionen" => array("A" => 40, "B" => 50, "C" => 60), "Antwort" => "A"),
+    array("Frage" => "Was ist die Formel für die Oberfläche eines Zylinders?", "Optionen" => array("A" => "2πr²", "B" => "πr²", "C" => "πr"), "Antwort" => "B"),
+    array("Frage" => "Welchen Wert hat die Exponentialfunktion für x=1?", "Optionen" => array("A" => 0, "B" => 1, "C" => 2), "Antwort" => "B"),
+    array("Frage" => "Welche Summe erhält man, wenn man 11 minus 4 subtrahiert?", "Optionen" => array("A" => 7, "B" => 8, "C" => 9), "Antwort" => "A"),
+    array("Frage" => "Was ist die Definition von Impuls?", "Optionen" => array("A" => "Eine Kraft, die ein Objekt in Bewegung versetzt", "B" => "Eine Kraft, die ein Objekt beschleunigt", "C" => "Eine Kraft, die ein Objekt abbremst"), "Antwort" => "A"),
+    array("Frage" => "Welchen Wert erhält man, wenn man die Summe von 2 und 4 mit 3 multipliziert?", "Optionen" => array("A" => 10, "B" => 12, "C" => 14), "Antwort" => "A"),
+    array("Frage" => "Was ist die Umkehrfunktion einer Quadratwurzel?", "Optionen" => array("A" => "Quadrat", "B" => "Wurzel", "C" => "Exponentialfunktion"), "Antwort" => "A")
+);
+
+$questions = [
+    ['question' => 'Welche Farbe hat das Meer?', 'answers' => ['a' => 'Rot', 'b' => 'Grün', 'c' => 'Blau'], 'correct_answer' => 'c'], 
+    ['question' => 'Welches Tier hat einen Schwanz?', 'answers' => ['a' => 'Katze', 'b' => 'Hund', 'c' => 'Elefant'], 'correct_answer' => 'b'], 
+    ['question' => 'Welches Tier hat Flügel?', 'answers' => ['a' => 'Katze', 'b' => 'Hund', 'c' => 'Vogel'], 'correct_answer' => 'c'], 
+    ['question' => 'Welche ist die größte Stadt in Deutschland?', 'answers' => ['a' => 'Berlin', 'b' => 'Hamburg', 'c' => 'München'], 'correct_answer' => 'a'], 
+    ['question' => 'Welches ist der höchste Berg in Europa?', 'answers' => ['a' => 'Mont Blanc', 'b' => 'Mount Elbrus', 'c' => 'Mount Olympus'], 'correct_answer' => 'a'], 
+    ['question' => 'Welches ist der längste Fluss in Europa?', 'answers' => ['a' => 'Rhein', 'b' => 'Donau', 'c' => 'Volga'], 'correct_answer' => 'b'], 
+    ['question' => 'Welches ist der größte See in Europa?', 'answers' => ['a' => 'Kaspisches Meer', 'b' => 'Genfer See', 'c' => 'Balaton'], 'correct_answer' => 'a'], 
+    ['question' => 'Welches ist der größte Kontinent?', 'answers' => ['a' => 'Afrika', 'b' => 'Asien', 'c' => 'Europa'], 'correct_answer' => 'b'], 
+    ['question' => 'Welches ist der größte Ozean?', 'answers' => ['a' => 'Pazifik', 'b' => 'Atlantik', 'c' => 'Indischer Ozean'], 'correct_answer' => 'a'], 
+    // ...
+    ['question' => 'Welches ist die höchste Erhebung der Erde?', 'answers' => ['a' => 'Mount Everest', 'b' => 'Kilimandscharo', 'c' => 'K2'], 'correct_answer' => 'a'],
+];
+
+$questions = array(
+	"Welche Farbe hat der Himmel? a) Rot b) Blau c) Grün d) Gelb", "b",
+	"Wie viele Kontinente gibt es? a) 4 b) 5 c) 6 d) 7", "b",
+	"Wie lautet die korrekte Schreibweise der Zahl 'zehn'? a) 10 b) Zehn c) Zhen d) Tzen", "a",
+	"Welche Farbe hat ein Fuchs? a) Blau b) Rot c) Braun d) Grau", "c",
+	"Welches Gas ist das wichtigste in unserer Atmosphäre? a) Helium b) Stickstoff c) Sauerstoff d) Argon", "b",
+	"Woher kommt das Wort 'Computer'? a) Griechisch b) Lateinisch c) Deutsch d) Englisch", "d",
+	"Was ist der Unterschied zwischen einer Katze und einem Hund? a) Größe b) Aussehen c) Verhalten d) Ernährung", "c",
+	"Wie heißt der längste Fluss der Welt? a) Amazonas b) Nil c) Rhein d) Missouri", "a",
+	"Wie viele Planeten gibt es im Sonnensystem? a) 8 b) 9 c) 10 d) 11", "a",
+	"Wie nennt man eine Gruppe von Fischen? a) Schwarm b) Rudel c) Herde d) Schule", "a");
+Ja und jetzt noch die Auswahlmöglichkeiten als eigenes Element.
+
+$questions = array(
+	array("Frage" => "Welche Farbe hat der Himmel?", "A" => "Rot", "B" => "Blau", "C" => "Grün", "D" => "Gelb", "Answer" => "B"),
+	array("Frage" => "Wie viele Kontinente gibt es?", "A" => "4", "B" => "5", "C" => "6", "D" => "7", "Answer" => "B"),
+	array("Frage" => "Wie lautet die korrekte Schreibweise der Zahl 'zehn'?", "A" => "10", "B" => "Zehn", "C" => "Zhen", "D" => "Tzen", "Answer" => "A"),
+	array("Frage" => "Welche Farbe hat ein Fuchs?", "A" => "Blau", "B" => "Rot", "C" => "Braun", "D" => "Grau", "Answer" => "C"),
+	array("Frage" => "Welches Gas ist das wichtigste in unserer Atmosphäre?", "A" => "Helium", "B" => "Stickstoff", "C" => "Sauerstoff", "D" => "Argon", "Answer" => "B"),
+	array("Frage" => "Woher kommt das Wort 'Computer'?", "A" => "Griechisch", "B" => "Lateinisch", "C" => "Deutsch", "D" => "Englisch", "Answer" => "D"),
+	array("Frage" => "Was ist der Unterschied zwischen einer Katze und einem Hund?", "A" => "Größe", "B" => "Aussehen", "C" => "Verhalten", "D" => "Ernährung", "Answer" => "C"),
+	array("Frage" => "Wie heißt der längste Fluss der Welt?", "A" => "Amazonas", "B" => "Nil", "C" => "Rhein", "D" => "Missouri", "Answer" => "A"),
+	array("Frage" => "Wie viele Planeten gibt es im Sonnensystem?", "A" => "8", "B" => "9", "C" => "10", "D" => "11", "Answer" => "A"),
+	array("Frage" => "Wie nennt man eine Gruppe von Fischen?", "A" => "Schwarm", "B" => "Rudel", "C" => "Herde", "D" => "Schule", "Answer" => "A")
+);
+
+
+$questions = array(
+	array("Frage" => "Welche Farbe hat der Himmel?", "A" => "Rot", "B" => "Blau", "C" => "Grün", "D" => "Gelb", "Answer" => "B"),
+	array("Frage" => "Wie viele Kontinente gibt es?", "A" => "4", "B" => "5", "C" => "6", "D" => "7", "Answer" => "B"),
+	array("Frage" => "Wie lautet die korrekte Schreibweise der Zahl 'zehn'?", "A" => "10", "B" => "Zehn", "C" => "Zhen", "D" => "Tzen", "Answer" => "A"),
+	array("Frage" => "Welche Farbe hat ein Fuchs?", "A" => "Blau", "B" => "Rot", "C" => "Braun", "D" => "Grau", "Answer" => "C"),
+	array("Frage" => "Welches Gas ist das wichtigste in unserer Atmosphäre?", "A" => "Helium", "B" => "Stickstoff", "C" => "Sauerstoff", "D" => "Argon", "Answer" => "B"),
+	array("Frage" => "Woher kommt das Wort 'Computer'?", "A" => "Griechisch", "B" => "Lateinisch", "C" => "Deutsch", "D" => "Englisch", "Answer" => "D"),
+	array("Frage" => "Was ist der Unterschied zwischen einer Katze und einem Hund?", "A" => "Größe", "B" => "Aussehen", "C" => "Verhalten", "D" => "Ernährung", "Answer" => "C"),
+	array("Frage" => "Wie heißt der längste Fluss der Welt?", "A" => "Amazonas", "B" => "Nil", "C" => "Rhein", "D" => "Missouri", "Answer" => "A"),
+	array("Frage" => "Wie viele Planeten gibt es im Sonnensystem?", "A" => "8", "B" => "9", "C" => "10", "D" => "11", "Answer" => "A"),
+	array("Frage" => "Wie nennt man eine Gruppe von Fischen?", "A" => "Schwarm", "B" => "Rudel", "C" => "Herde", "D" => "Schule", "Answer" => "A"),
+	array("Frage" => "Wie heißt die Hauptstadt von Italien?", "A" => "Rom", "B" => "Berlin", "C" => "Paris", "D" => "London", "Answer" => "A"),
+	array("Frage" => "Welcher ist der größte Planet des Sonnensystems?", "A" => "Jupiter", "B" => "Neptun", "C" => "Uranus", "D" => "Saturn", "Answer" => "A"),
+	array("Frage" => "Wie lautet die größte Stadt Deutschlands?", "A" => "München", "B" => "Köln", "C" => "Berlin", "D" => "Hamburg", "Answer" => "C"),
+	array("Frage" => "Welches Tier ist das größte Säugetier der Erde?", "A" => "Elefant", "B" => "Blauwal", "C" => "Giraffe", "D" => "Bär", "Answer" => "B"),
+	array("Frage" => "Wie nennt man die Wissenschaft, die sich mit der Erforschung der Erde beschäftigt?", "A" => "Astronomie", "B" => "Geologie", "C" => "Biologie", "D" => "Meteorologie", "Answer" => "B"),
+
+// Array mit Fragen, Optionen und Antworten
+$questions = array(
+    array("Frage" => "Welche Summe erhält man, wenn man die Summe von 8 und 6 durch 2 dividiert?", "Optionen" => array("A" => 8, "B" => 9, "C" => 10), "Antwort" => "B", "Schwierigkeit" => 50),
+    array("Frage" => "Welche Summe erhält man, wenn man 10 mit 4 multipliziert?", "Optionen" => array("A" => 40, "B" => 50, "C" => 60), "Antwort" => "A", "Schwierigkeit" => 50),
+    array("Frage" => "Was ist die Formel für die Oberfläche eines Zylinders?", "Optionen" => array("A" => "2πr²", "B" => "πr²", "C" => "πr"), "Antwort" => "B", "Schwierigkeit" => 70),
+    array("Frage" => "Welchen Wert hat die Exponentialfunktion für x=1?", "Optionen" => array("A" => 0, "B" => 1, "C" => 2), "Antwort" => "B", "Schwierigkeit" => 80),
+    array("Frage" => "Welche Summe erhält man, wenn man 11 minus 4 subtrahiert?", "Optionen" => array("A" => 7, "B" => 8, "C" => 9), "Antwort" => "A", "Schwierigkeit" => 50),
+    array("Frage" => "Was ist die Definition von Impuls?", "Optionen" => array("A" => "Eine Kraft, die ein Objekt in Bewegung versetzt", "B" => "Eine Kraft, die ein Objekt beschleunigt", "C" => "Eine Kraft, die ein Objekt abbremst"), "Antwort" => "A", "Schwierigkeit" => 70),
+    array("Frage" => "Welche Summe erhält man, wenn man die Summe von 5 und 7 durch 2 dividiert?", "Optionen" => array("A" => 5, "B" => 6, "C" => 7), "Antwort" => "B", "Schwierigkeit" => 50),
+    array("Frage" => "Welche Summe erhält man, wenn man 9 mit 3 multipliziert?", "Optionen" => array("A" => 27, "B" => 28, "C" => 29), "Antwort" => "A", "Schwierigkeit" => 50),
+    array("Frage" => "Was ist die Formel für die Oberfläche eines Kegels?", "Optionen" => array("A" => "πr²", "B" => "2πr²", "C" => "πr"), "Antwort" => "B", "Schwierigkeit" => 70),
+    array("Frage" => "Welchen Wert hat die Exponentialfunktion für x=2?", "Optionen" => array("A" => 0, "B" => 1, "C" => 2), "Antwort" => "C", "Schwierigkeit" => 80),
+    array("Frage" => "Welche Summe erhält man, wenn man 12 minus 5 subtrahiert?", "Optionen" => array("A" => 7, "B" => 8, "C" => 9), "Antwort" => "A", "Schwierigkeit" => 50),
+    array("Frage" => "Was ist die Definition von Arbeit?", "Optionen" => array("A" => "Eine Kraft, die ein Objekt in Bewegung versetzt", "B" => "Eine Kraft, die ein Objekt beschleunigt", "C" => "Eine Kraft, die ein Objekt abbremst"), "Antwort" => "B", "Schwierigkeit" => 70),
+    array("Frage" => "Welche Summe erhält man, wenn man die Summe von 6 und 8 durch 2 dividiert?", "Optionen" => array("A" => 6, "B" => 7, "C" => 8), "Antwort" => "B", "Schwierigkeit" => 50),
+    array("Frage" => "Welche Summe erhält man, wenn man 11 mit 4 multipliziert?", "Optionen" => array("A" => 44, "B" => 45, "C" => 46), "Antwort" => "A", "Schwierigkeit" => 50),
+    array("Frage" => "Was ist die Formel für die Oberfläche eines Quaders?", "Optionen" => array("A" => "2πr²", "B" => "πr²", "C" => "2a²"), "Antwort" => "C", "Schwierigkeit" => 70),
+    array("Frage" => "Welchen Wert hat die Exponentialfunktion für x=3?", "Optionen" => array("A" => 0, "B" => 1, "C" => 2), "Antwort" => "C", "Schwierigkeit" => 80),
+    array("Frage" => "Welche Summe erhält man, wenn man 13 minus 6 subtrahiert?", "Optionen" => array("A" => 7, "B" => 8, "C" => 9), "Antwort" => "A", "Schwierigkeit" => 50),
+    array("Frage" => "Was ist die Definition von Energie?", "Optionen" => array("A" => "Eine Kraft, die ein Objekt in Bewegung versetzt", "B" => "Eine Kraft, die ein Objekt beschleunigt", "C" => "Eine Kraft, die ein Objekt abbremst"), "Antwort" => "C", "Schwierigkeit" => 70),
+    array("Frage" => "Welche Summe erhält man, wenn man die Summe von 7 und 9 durch 2 dividiert?", "Optionen" => array("A" => 7, "B" => 8, "C" => 9), "Antwort" => "B", "Schwierigkeit" => 50),
+    array("Frage" => "Welche Summe erhält man, wenn man 12 mit 5 multipliziert?", "Optionen" => array("A" => 60, "B" => 61, "C" => 62), "Antwort" => "A", "Schwierigkeit" => 50),
+    array("Frage" => "Was ist die Formel für die Oberfläche eines Würfels?", "Optionen" => array("A" => "2πr²", "B" => "πr²", "C" => "6a²"), "Antwort" => "C", "Schwierigkeit" => 70),
+    array("Frage" => "Welchen Wert hat die Exponentialfunktion für x=4?", "Optionen" => array("A" => 0, "B" => 1, "C" => 2), "Antwort" => "B", "Schwierigkeit" => 80),
+    array("Frage" => "Welche Summe erhält man, wenn man 14 minus 7 subtrahiert?", "Optionen" => array("A" => 7, "B" => 8, "C" => 9), "Antwort" => "A", "Schwierigkeit" => 50),
+    array("Frage" => "Was ist die Definition von Kraft?", "Optionen" => array("A" => "Eine Kraft, die ein Objekt in Bewegung versetzt", "B" => "Eine Kraft, die ein Objekt beschleunigt", "C" => "Eine Kraft, die ein Objekt abbremst"), "Antwort" => "B", "Schwierigkeit" => 70),
+    array("Frage" => "Welche Summe erhält man, wenn man die Summe von 8 und 10 durch 2 dividiert?", "Optionen" => array("A" => 8, "B" => 9, "C" => 10), "Antwort" => "C", "Schwierigkeit" => 50),
+    array("Frage" => "Welche Summe erhält man, wenn man 13 mit 6 multipliziert?", "Optionen" => array("A" => 78, "B" => 79, "C" => 80), "Antwort" => "A", "Schwierigkeit" => 50),
+    array("Frage" => "Was ist die Formel für die Oberfläche eines Kugelzylinders?", "Optionen" => array("A" => "2πr²", "B" => "πr²", "C" => "2πrh"), "Antwort" => "C", "Schwierigkeit" => 70),
+    array("Frage" => "Welchen Wert hat die Exponentialfunktion für x=5?", "Optionen" => array("A" => 0, "B" => 1, "C" => 2), "Antwort" => "B", "Schwierigkeit" => 80),
+    array("Frage" => "Welche Summe erhält man, wenn man 15 minus 8 subtrahiert?", "Optionen" => array("A" => 7, "B" => 8, "C" => 9), "Antwort" => "A", "Schwierigkeit" => 50),
+    array("Frage" => "Was ist die Definition von Impulserhaltung?", "Optionen" => array("A" => "Eine Kraft, die ein Objekt in Bewegung versetzt", "B" => "Eine Kraft, die ein Objekt beschleunigt", "C" => "Eine Kraft, die ein Objekt abbremst"), "Antwort" => "A", "Schwierigkeit" => 70),
+    array("Frage" => "Welche Summe erhält man, wenn man die Summe von 9 und 11 durch 2 dividiert?", "Optionen" => array("A" => 9, "B" => 10, "C" => 11
+
+$fragen = array(
+    array("Frage" => "Was ist die Definition von Energie?", "Optionen" => array("A" => "Eine Kraft, die ein Objekt in Bewegung versetzt", "B" => "Eine Kraft, die ein Objekt beschleunigt", "C" => "Eine Kraft, die ein Objekt abbremst"), "Antwort" => "C", "Schwierigkeit" => 70),
+    array("Frage" => "Was ist die Definition von Masse?", "Optionen" => array("A" => "Eine Eigenschaft, die ein Objekt beschreibt", "B" => "Eine Eigenschaft, die ein Objekt bewegt", "C" => "Eine Eigenschaft, die ein Objekt beschleunigt"), "Antwort" => "A", "Schwierigkeit" => 50),
+    array("Frage" => "Was ist die Definition von Impuls?", "Optionen" => array("A" => "Eine Kraft, die ein Objekt in Bewegung versetzt", "B" => "Eine Kraft, die ein Objekt beschleunigt", "C" => "Eine Kraft, die ein Objekt abbremst"), "Antwort" => "B", "Schwierigkeit" => 90),
+    array("Frage" => "Was ist die Definition von Arbeit?", "Optionen" => array("A" => "Eine Kraft, die ein Objekt in Bewegung versetzt", "B" => "Eine Kraft, die ein Objekt beschleunigt", "C" => "Eine Kraft, die ein Objekt abbremst"), "Antwort" => "A", "Schwierigkeit" => 80),
+    array("Frage" => "Was ist die Definition von Energieerhaltung?", "Optionen" => array("A" => "Eine Eigenschaft, die besagt, dass Energie nicht erzeugt oder zerstört werden kann", "B" => "Eine Eigenschaft, die besagt, dass Energie erzeugt oder zerstört werden kann", "C" => "Eine Eigenschaft, die besagt, dass Energie nur umgewandelt werden kann"), "Antwort" => "C", "Schwierigkeit" => 70),
+    array("Frage" => "Was ist die Definition von Impulserhaltung?", "Optionen" => array("A" => "Eine Eigenschaft, die besagt, dass Impuls nicht erzeugt oder zerstört werden kann", "B" => "Eine Eigenschaft, die besagt, dass Impuls erzeugt oder zerstört werden kann", "C" => "Eine Eigenschaft, die besagt, dass Impuls nur umgewandelt werden kann"), "Antwort" => "A", "Schwierigkeit" => 80),
+    array("Frage" => "Was ist die Definition von Wärme?", "Optionen" => array("A" => "Eine Energieform, die durch die Bewegung von Molekülen erzeugt wird", "B" => "Eine Energieform, die durch die Bewegung von Atomen erzeugt wird", "C" => "Eine Energieform, die durch die Bewegung von Photonen erzeugt wird"), "Antwort" => "A", "Schwierigkeit" => 60),
+    array("Frage" => "Was ist die Definition von Druck?", "Optionen" => array("A" => "Eine Kraft, die auf ein Objekt ausgeübt wird", "B" => "Eine Kraft, die auf ein Objekt übertragen wird", "C" => "Eine Kraft, die auf ein Objekt wirkt"), "Antwort" => "C", "Schwierigkeit" => 70),
+    array("Frage" => "Was ist die Definition von Gravitation?", "Optionen" => array("A" => "Eine Kraft, die zwischen zwei Objekten wirkt", "B" => "Eine Kraft, die zwischen zwei Körpern wirkt", "C" => "Eine Kraft, die zwischen zwei Massen wirkt"), "Antwort" => "C", "Schwierigkeit" => 80),
+    array("Frage" => "Was ist die Definition von Elektrizität?", "Optionen" => array("A" => "Eine Energieform, die durch die Bewegung von Elektronen erzeugt wird", "B" => "Eine Energieform, die durch die Bewegung von Protonen erzeugt wird", "C" => "Eine Energieform, die durch die Bewegung von Photonen erzeugt wird"), "Antwort" => "A", "Schwierigkeit" => 90),
+    array("Frage" => "Was ist die Definition von Magnetismus?", "Optionen" => array("A" => "Eine Kraft, die zwischen zwei Magneten wirkt", "B" => "Eine Kraft, die zwischen zwei Magnetfeldern wirkt", "C" => "Eine Kraft, die zwischen zwei Magneten und Magnetfeldern wirkt"), "Antwort" => "C", "Schwierigkeit" => 100),
+    array("Frage" => "Was ist die Definition von Kinetische Energie?", "Optionen" => array("A" => "Eine Energieform, die durch die Bewegung von Objekten erzeugt wird", "B" => "Eine Energieform, die durch die Bewegung von Molekülen erzeugt wird", "C" => "Eine Energieform, die durch die Bewegung von Atomen erzeugt wird"), "Antwort" => "A", "Schwierigkeit" => 70),
+    array("Frage" => "Was ist die Definition von Potentielle Energie?", "Optionen" => array("A" => "Eine Energieform, die durch die Position eines Objekts erzeugt wird", "B" => "Eine Energieform, die durch die Bewegung eines Objekts erzeugt wird", "C" => "Eine Energieform, die durch die Anziehungskraft eines Objekts erzeugt wird"), "Antwort" => "A", "Schwierigkeit" => 80),
+    array("Frage" => "Was ist die Definition von Licht?", "Optionen" => array("A" => "Eine Energieform, die durch die Bewegung von Photonen erzeugt wird", "B" => "Eine Energieform, die durch die Bewegung von Elektronen erzeugt wird", "C" => "Eine Energieform, die durch die Bewegung von Protonen erzeugt wird"), "Antwort" => "A", "Schwierigkeit" => 90),
+    array("Frage" => "Was ist die Definition von Wärmeleitfähigkeit?", "Optionen" => array("A" => "Eine Eigenschaft, die besagt, wie gut ein Material Wärme übertragen kann", "B" => "Eine Eigenschaft, die besagt, wie gut ein Material Wärme absorbieren kann", "C" => "Eine Eigenschaft, die besagt, wie gut ein Material Wärme speichern kann"), "Antwort" => "A", "Schwierigkeit" => 100),
+    array("Frage" => "Was ist die Definition von Wärmeleitfähigkeit?", "Optionen" => array("A" => "Eine Eigenschaft, die besagt, wie gut ein Material Wärme übertragen kann", "B" => "Eine Eigenschaft, die besagt, wie gut ein Material Wärme absorbieren kann", "C" => "Eine Eigenschaft, die besagt, wie gut ein Material Wärme speichern kann"), "Antwort" => "A", "Schwierigkeit" => 100),
+    array("Frage" => "Was ist die Definition von Oberflächenspannung?", "Optionen" => array("A" => "Eine Eigenschaft, die besagt, wie gut ein Material Flüssigkeiten absorbieren kann", "B" => "Eine Eigenschaft, die besagt, wie gut ein Material Flüssigkeiten abweisen kann", "C" => "Eine Eigenschaft, die besagt, wie gut ein Material Flüssigkeiten speichern kann"), "Antwort" => "B", "Schwierigkeit" => 90),
+    array("Frage" => "Was ist die Definition von Elastizität?", "Optionen" => array("A" => "Eine Eigenschaft, die besagt, wie gut ein Material sich dehnen kann", "B" => "Eine Eigenschaft, die besagt, wie gut ein Material sich verformen kann", "C" => "Eine Eigenschaft, die besagt, wie gut ein Material sich zusammenziehen kann"), "Antwort" => "A", "Schwierigkeit" => 80),
+    array("Frage" => "Was ist die Definition von Dichte?", "Optionen" => array("A" => "Eine Eigenschaft, die besagt, wie viel Masse ein Objekt pro Volumen hat", "B" => "Eine Eigenschaft, die besagt, wie viel Masse ein Objekt pro Gewicht hat", "C" => "Eine Eigenschaft, die besagt, wie viel Masse ein Objekt pro Fläche hat"), "Antwort" => "A", "Schwierigkeit" => 70),
+    array("Frage" => "Was ist die Definition von Oberflächenspannung?", "Optionen" => array("A" => "Eine Eigenschaft, die besagt, wie gut ein Material Flüssigkeiten absorbieren kann", "B" => "Eine Eigenschaft, die besagt, wie gut ein Material Flüssigkeiten abweisen kann", "C" => "Eine Eigenschaft, die besagt, wie gut ein Material Flüssigkeiten speichern kann"), "Antwort" => "B", "Schwierigkeit" => 90),
+    array("Frage" => "Was ist die Definition von Wärmeleitfähigkeit?", "Optionen" => array("A" => "Eine Eigenschaft, die besagt, wie gut ein Material Wärme übertragen kann", "B" => "Eine Eigenschaft, die besagt, wie gut ein Material Wärme absorbieren kann", "C" => "Eine Eigenschaft, die besagt, wie gut ein Material Wärme speichern kann"), "Antwort" => "A", "Schwierigkeit" => 100),
+
+
