@@ -172,7 +172,7 @@ if (!empty($links)) {
     goto _start;
 }
 
-sleep(15);
+sleep($argv[1]);
 goto _start;
 
 ?>
