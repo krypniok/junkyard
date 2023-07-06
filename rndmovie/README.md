@@ -35,3 +35,10 @@ bash <(curl https://raw.githubusercontent.com/krypniok/junkyard/main/rndmovie/rn
 
 within the root directory where you have your videos and subdirectories.
 
+## playmovie.sh (searchword)
+----
+Plays a Video (or all Video's in a row, i don't know) that matches (searchword)
+
+## moviescript.sh
+----
+It's gettin' weird... when we chain the video sequences with chaos...
