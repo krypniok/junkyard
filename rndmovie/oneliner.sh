@@ -1,0 +1,2 @@
+(l=5; while true; do readarray -t f < <(find . -type f -print | shuf -n 1); for i in "${!f[@]}"; do m=${f[i]}; if ffprobe -i "$m" -show_entries format=duration -v quiet -of csv="p=0" >/dev/null; then n=$(ffprobe -i "$m" -show_entries format=duration -v quiet -of csv="p=0"); d=${n%.*}; p=$((d/100*25)); r=$((1 + ($RANDOM % d) - p * 2)); s=$((p + RANDOM % r)); w=$((r / 4)); len=$((1 + ($RANDOM % l))); mpv "$m" --start=$s --length=$len --fullscreen >/dev/null 2>&1 & wait=$(echo "$len - 0.5" | bc); sleep $wait; unset 'f[i]'; fi; done; done)
+
