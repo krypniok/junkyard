@@ -32,3 +32,6 @@ You even don't have to download anything if you just enter
 `
 bash <(curl https://raw.githubusercontent.com/krypniok/junkyard/main/rndmovie/rndmovie.sh) 3
 `
+
+within the root directory where you have your videos and subdirectories.
+
