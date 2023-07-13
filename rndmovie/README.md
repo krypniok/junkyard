@@ -38,10 +38,8 @@ within the root directory where you have your videos and subdirectories.
 ## playmovie.sh (searchword)
 ----
 Plays a Video (or all Video's in a row, i don't know) that matches (searchword)
-#
 
 ## moviescript.sh
-
+----
 Make up a new MOvie by cutting scenes together.
 The file "input.txt" is read and self-explanatory.
-----
