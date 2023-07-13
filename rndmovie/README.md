@@ -41,5 +41,5 @@ Plays a Video (or all Video's in a row, i don't know) that matches (searchword)
 
 ## moviescript.sh
 ----
-Make up a new MOvie by cutting scenes together.
+Make up a new Movie by cutting scenes together.
 The file "input.txt" is read and self-explanatory.
