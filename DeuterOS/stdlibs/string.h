@@ -14,3 +14,5 @@ unsigned long strtoul_custom(const char* str, char** endptr, int base);
 char* strstr_custom(const char* haystack, const char* needle);
 char* strchr_custom(const char* str, int ch);
 char* strtok_custom(char* str, const char* delim);
+
+void* search_string(void* start_address, size_t size, const char* str);

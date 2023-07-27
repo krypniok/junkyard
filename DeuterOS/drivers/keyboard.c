@@ -14,7 +14,10 @@
 
 #define SC_MAX 57
 
-static char key_buffer[256];
+#define KEY_STATUS_MAX 128
+
+static bool key_status[KEY_STATUS_MAX];
+static bool extended_scancode = false;
 
 const char *sc_name[] = {"ERROR", "Esc", "1", "2", "3", "4", "5", "6",
                          "7", "8", "9", "0", "-", "=", "Backspace", "Tab", "Q", "W", "E",
@@ -38,23 +41,43 @@ const char sc_ascii[] = {'?', '?', '1', '2', '3', '4', '5', '6',
                          '?', '?', '?', '?', '?', '?', '?', '?', '?', '?',
                          '^', 'v', '<', '>'};
 
+const char sc_ascii_upper[] = {'?', '?', '!', '"', '§', '$', '%', '&',
+                         '/', '(', ')', '=', '_', '*', '?', '?', 'Q', 'W', 'E', 'R', 'T', 'Z',
+                         'U', 'I', 'O', 'P', '[', ']', '?', '?', 'A', 'S', 'D', 'F', 'G',
+                         'H', 'J', 'K', 'L', ';', '\'', '`', '?', '\\', 'Y', 'X', 'C', 'V',
+                         'B', 'N', 'M', ',', '.', '/', '?', '?', '?', ' ', '?', '?', '?',
+                         '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?',
+                         '?', '?', '?', '?', '?', '?', '?', '?', '?', '?',
+                         '^', 'v', '<', '>'};
 
 
 static void keyboard_callback(registers_t *regs) {
     uint8_t scancode = port_byte_in(0x60);
 
-    if (scancode > SC_MAX) return;
-    if (scancode == BACKSPACE) {
-        if (backspace(key_buffer)) {
-            print_backspace();
+    // Check for extended scancode prefix
+    if (scancode == 0xE0) {
+        extended_scancode = true;
+        return;
+    }
+
+    // Handle key release event
+    if (scancode >= 0x80) {
+        scancode -= 0x80;
+        key_status[scancode] = false;
+        return;
+    }
+
+    // Handle key press event
+    if (scancode < KEY_STATUS_MAX) {
+        key_status[scancode] = true;
+
+        // Check if the scancode is extended
+        if (extended_scancode) {
+            // Handle extended scancode here, if needed
+            extended_scancode = false; // Reset extended scancode flag
+        } else {
+            // Handle regular scancode here
         }
-    } else if (scancode == ENTER) {
-//        print_nl();
-        execute_command(key_buffer);
-        key_buffer[0] = '\0';
-    } else {
-        char letter = sc_ascii[(int) scancode];
-        append(key_buffer, letter);
     }
 }
 
@@ -63,3 +86,9 @@ void init_keyboard() {
     register_interrupt_handler(IRQ1, keyboard_callback);
 }
 
+bool is_key_pressed(unsigned char scancode) {
+    if (scancode < KEY_STATUS_MAX) {
+        return key_status[scancode];
+    }
+    return false;
+}

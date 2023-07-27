@@ -7,6 +7,10 @@
 #include "../kernel/mem.h"
 #include "../kernel/util.h"
 
+unsigned char g_ConsoleColor = WHITE_ON_BLACK;
+
+void set_color(unsigned char c) { g_ConsoleColor = c; }
+
 void set_cursor(int offset) {
     offset /= 2;
     port_byte_out(REG_SCREEN_CTRL, 14);
@@ -38,7 +42,7 @@ int move_offset_to_new_line(int offset) {
 void set_char_at_video_memory(char character, int offset) {
     uint8_t *vidmem = (uint8_t *) VIDEO_ADDRESS;
     vidmem[offset] = character;
-    vidmem[offset + 1] = WHITE_ON_BLACK;
+    vidmem[offset + 1] = g_ConsoleColor;
 }
 
 int scroll_ln(int offset) {

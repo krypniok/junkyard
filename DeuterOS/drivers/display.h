@@ -42,8 +42,7 @@
 #define BG_BRIGHT_WHITE 240
 
 
-#define WHITE_ON_BLACK FG_LIGHT_GREEN | BG_GREEN
-
+#define WHITE_ON_BLACK FG_BRIGHT_WHITE | BG_BLACK
 
 
 /* Screen i/o ports */
@@ -63,6 +62,8 @@ void print_backspace();
 
 void set_cursor(int offset);
 int get_cursor();
+
+void set_color(unsigned char c);
 
 void printChar(unsigned char x, unsigned char y, unsigned char cl, char c);
 

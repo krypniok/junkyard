@@ -17,6 +17,11 @@ static void timer_callback(registers_t *regs) {
 //    print_nl();
 }
 
+void sleep(int ms) {
+    uint32_t ts = tick;
+    while( (tick - ts) < 1000) { }
+}
+
 void init_timer(uint32_t freq) {
     /* Install the function we just wrote */
     register_interrupt_handler(IRQ0, timer_callback);

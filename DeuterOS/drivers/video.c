@@ -8,5 +8,5 @@ static void video_callback(registers_t *regs) {
 
 void init_video() {
     /* Install the function we just wrote */
-    register_interrupt_handler(0x10, video_callback);
+    register_interrupt_handler(IRQ10, video_callback);
 }
