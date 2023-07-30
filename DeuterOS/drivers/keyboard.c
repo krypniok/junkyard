@@ -1,4 +1,5 @@
 #include <stdbool.h>
+
 #include "keyboard.h"
 #include "ports.h"
 #include "../cpu/isr.h"

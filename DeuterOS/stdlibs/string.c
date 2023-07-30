@@ -194,15 +194,11 @@ char* strtok_custom(char* str, const char* delim) {
     return token;
 }
 
-// Helper function to search for a string within a memory range
 void* search_string(void* start_address, size_t size, const char* str) {
-    size_t str_len = 0;
-    while (str[str_len]) {
-        str_len++;
-    }
+    size_t str_len = byteStringLength(str);
 
-    for (size_t i = 0; i < size; i++) {
-        if (compare_string(start_address + i, str) == 0) {
+    for (size_t i = 0; i < size - str_len + 1; i++) {
+        if (byteMemcmp(start_address + i, str, str_len) == 0) {
             // String found, return the address
             return start_address + i;
         }

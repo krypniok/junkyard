@@ -86,24 +86,24 @@ void start_kernel() {
     printf(")\n");
 
     if(! g_bKernelInitialised) {
-    print_string("Installing interrupt service routines (ISRs).\n");
-    isr_install();
+        print_string("Installing interrupt service routines (ISRs).\n");
+        isr_install();
 
-    print_string("Enabling external interrupts.\n");
-    asm volatile("sti");
+        print_string("Enabling external interrupts.\n");
+        asm volatile("sti");
 
-   // print_string("Initializing keyboard (IRQ 1).\n");
-    init_keyboard();
+        print_string("Initializing keyboard (IRQ 1).\n");
+        init_keyboard();
 
-    print_string("Initializing dynamic memory.\n");
-    init_dynamic_mem();
+        print_string("Initializing dynamic memory.\n");
+        init_dynamic_mem();
 
-    print_string("A20 Line was activated by the MBR.\n");
-//    enable_a20_line();
+        print_string("A20 Line was activated by the MBR.\n");
+        // enable_a20_line();
 
-    print_string("Initializing timer.\n");
-    init_timer(1000);
-    g_bKernelInitialised = true;
+        print_string("Initializing timer.\n");
+        init_timer(1000);
+        g_bKernelInitialised = true;
     }
 /*
     print_nl();
@@ -116,7 +116,7 @@ void start_kernel() {
     printf("\n> ");
 
     while(!g_bKernelShouldStop) {
-        kernel_editor_program();
+        kernel_console_program();
     }
 
 end_of_kernel:
@@ -145,10 +145,22 @@ typedef struct {
 
 fileentry filetable[2] = { {"name1", name1}, {"name2", name2} };
 
+// Helper function to search for a byte within a memory range
+void* search_byte(void* start_address, size_t size, unsigned char byteToFind) {
+    for (size_t i = 0; i < size; i++) {
+        unsigned char byte = *((unsigned char*)(start_address + i));
+        if (byte == byteToFind) {
+            // Byte found, return the address
+            return (start_address + i);
+        }
+    }
 
-// Helper function to execute the "search" command
-void execute_search_command(char *input) {
-    char* addressStr = strtok_custom(input + byteStringLength("search") + 1, " ");
+    // Byte not found in the given range
+    return NULL;
+}
+
+void execute_search_command_str(char *input) {
+    char* addressStr = strtok_custom(input + byteStringLength("searchs") + 1, " ");
     char* sizeStr = strtok_custom(NULL, " ");
     char* searchString = strtok_custom(NULL, " ");
 
@@ -160,15 +172,12 @@ void execute_search_command(char *input) {
         void* result = search_string((void*)address, size, searchString);
 
         if (result != NULL) {
-            // String found, call the "dump" command on the address where the string was found
+            // String found, print the address
             char resultAddressStr[20];
-            sprintf(resultAddressStr, "%p", result);
-            char dumpCommand[50];
-            byteMove(dumpCommand, "dump ", 5);
-            byteMove(dumpCommand + 5, resultAddressStr, byteStringLength(resultAddressStr));
-            byteMove(dumpCommand + 5 + byteStringLength(resultAddressStr), " ", 1);
-            byteMove(dumpCommand + 6 + byteStringLength(resultAddressStr), "4", 4);
-            execute_command(dumpCommand);
+            sprintf(resultAddressStr, "%p", &result);
+            print_string("String found at address: ");
+            print_string(resultAddressStr);
+            print_string("\n");
         } else {
             print_string("String not found.\n");
         }
@@ -176,6 +185,38 @@ void execute_search_command(char *input) {
         print_string("Invalid parameters for 'search address size string' command.\n");
     }
 }
+
+void execute_search_command_chr(char *input) {
+    char* addressStr = strtok_custom(input + byteStringLength("searchb") + 1, " ");
+    char* sizeStr = strtok_custom(NULL, " ");
+    char* byteStr = strtok_custom(NULL, " ");
+
+    if (addressStr != NULL && sizeStr != NULL && byteStr != NULL) {
+        uint32_t address = strtoul_custom(addressStr, NULL, 0);
+        uint32_t size = strtoul_custom(sizeStr, NULL, 0);
+        uint32_t byte = strtoul_custom(byteStr, NULL, 0);
+        unsigned char byteToFind = (unsigned char)byte;
+
+        printf("searching %d\n", byteToFind);
+
+        // Call the search_byte function to find the byte
+        void* result = search_byte((void*)address, size, byteToFind);
+
+        if (result != NULL) {
+            // Byte found, print the address
+            char resultAddressStr[20];
+            sprintf(resultAddressStr, "%p", &result);
+            print_string("Byte found at address: ");
+            print_string(resultAddressStr);
+            print_string("\n");
+        } else {
+            print_string("Byte not found.\n");
+        }
+    } else {
+        print_string("Invalid parameters for 'search address size byte' command.\n");
+    }
+}
+
 
 void print_ascii_table() {
     int rows = 16;
@@ -224,6 +265,8 @@ void execute_command(char *input) {
     int cursor = get_cursor();
     if (compare_string(input, "") == 0) {
         goto none;
+    } else if (compare_string(input, "edit") == 0) {
+        editor_main();
     } else if (compare_string(input, "exit") == 0) {
         g_bKernelShouldStop = true;
     } else if (compare_string(input, "stage2") == 0) {
@@ -314,8 +357,10 @@ void execute_command(char *input) {
             print_string("Invalid parameters for 'send' command.\n");
         }
     }
-      else if (strstr_custom(input, "search") == input) {
-        execute_search_command(input);
+    else if (strstr_custom(input, "searchb") == input) {
+        execute_search_command_chr(input);
+    } else if (strstr_custom(input, "searchs") == input) {
+        execute_search_command_str(input);
     } else if (compare_string(input, "clr") == 0 || compare_string(input, "rst") == 0) {
         clear_screen();
         set_cursor(0);
@@ -331,57 +376,6 @@ none:
     return;
 }
 
-
-
-void draw_status_bar() {
-    set_color(FG_BLACK | BG_CYAN);
-    for(unsigned char c=0; c<80; c++) {
-        printf(" ");
-    }    
-}
-
-// Console program one
-int kernel_editor_program() {
-    while (1) {
-        set_color(FG_BRIGHT_WHITE | BG_LIGHT_BLUE);
-        clear_screen();
-        draw_status_bar();
-        for(unsigned char c=0; c<23; c++) {
-            print_nl();            
-        }
-        draw_status_bar();
-
-        while ( !(read_keyboard_status() & 0x01)) { }
-            
-        // Überprüfe den Tastaturstatus
-        if (read_keyboard_status() & 0x01) {
-            // Tastatureingabe verfügbar, lese den Scan-Code
-            uint8_t scancode = read_keyboard_data();
-
-            if (scancode > SC_MAX) return 1;
-
-            if (scancode == BACKSPACE) {
-                if (backspace(key_buffer2)) {
-                    print_backspace();
-                }
-            } else if (scancode == ENTER) {
-                print_nl();
-                execute_command(key_buffer2);
-                key_buffer2[0] = '\0';
-            } else {
-                char letter;
-                if (is_key_pressed(SHIFT)) {
-                    letter = sc_ascii3[(int)scancode];
-                } else {
-                    letter = sc_ascii2[(int)scancode];
-                }
-                append(key_buffer2, letter);
-                char str[2] = {letter, '\0'};
-                print_string(str);
-            }
-        }
-    }
-}
 
 // Console program one
 int kernel_console_program() {
