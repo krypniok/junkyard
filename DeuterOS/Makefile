@@ -33,7 +33,7 @@ os-image.bin: boot/mbr.bin kernel.bin
 run: os-image.bin
 	dd if=/dev/zero of=disk_image.img bs=512 count=2880
 	dd if=os-image.bin of=disk_image.img conv=notrunc
-	qemu-system-i386 -drive format=raw,file=disk_image.img
+	qemu-system-i386 -rtc "base=2023-08-03T12:34:56" -drive format=raw,file=disk_image.img
 
 echo: os-image.bin
 	xxd $<
@@ -47,7 +47,7 @@ debug: os-image.bin kernel.elf
 	gdb -ex "target remote localhost:1234" -ex "symbol-file kernel.elf"
 
 %.o: %.c ${HEADERS}
-	gcc -fno-PIC -nostdlib --no-pie -g -m32 -ffreestanding $(CFLAGS) -c $< -o $@ # -g for debugging
+	gcc -fno-PIC -nostdlib --no-pie -m32 -ffreestanding $(CFLAGS) -c $< -o $@ # -g for debugging
 
 %.o: %.asm
 	nasm $< -f elf -o $@

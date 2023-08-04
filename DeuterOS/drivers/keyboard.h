@@ -97,3 +97,5 @@
 
 void init_keyboard();
 bool is_key_pressed(unsigned char scancode);
+
+unsigned char getch();

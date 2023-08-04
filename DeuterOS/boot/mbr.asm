@@ -2,10 +2,11 @@
 KERNEL_OFFSET equ 0x1000 ; The same one we used when linking the kernel
 
 mov [BOOT_DRIVE], dl ; Remember that the BIOS sets us the boot drive in 'dl' on boot
-mov bp, 0x9000
+mov bp, 0xFFFF
 mov sp, bp
 
 mov bx, MSG_16BIT_MODE
+
 call print16
 call print16_nl
 
@@ -30,10 +31,10 @@ load_kernel:
     call print16_nl
 
     mov bx, 0x1000 ; Read from disk and store in 0x1000
-    mov dh, 48
+    mov dh, 53
     mov dl, [BOOT_DRIVE]
     call disk_load
-   
+
     ret
 
 enable_a20_line:
@@ -47,13 +48,13 @@ enable_a20_line:
 [bits 32]
 BEGIN_32BIT:
 
-   ; pusha
-   ; mov esi, 0x1000  ; Source address
-   ; mov edi, 0x100000 ; Destination address
-   ; mov ecx, 0xFFFF  ; Length of data to move
-   ; cld             ; Set the direction flag to forward
-   ; rep movsb       ; Move the data from source to destination
-   ; popa
+   pusha
+   mov esi, 0x1000  ; Source address
+   mov edi, 0x100000 ; Destination address
+   mov ecx, 0xFFFF  ; Length of data to move
+   cld             ; Set the direction flag to forward
+   rep movsb       ; Move the data from source to destination
+   popa
 
     mov ebx, MSG_32BIT_MODE
     call print32

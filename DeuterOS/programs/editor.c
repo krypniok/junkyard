@@ -8,10 +8,11 @@
 #include "../kernel/util.h"
 #include "../kernel/mem.h"
 
+#include "editor.h"
 
 #define MAX_BUFFER_SIZE 1024
 
-unsigned char *sc_name3[] = {"ERROR", "Esc", "1", "2", "3", "4", "5", "6",
+const char* sc_name3[] = {"VROOM", "Esc", "1", "2", "3", "4", "5", "6",
                          "7", "8", "9", "0", "-", "=", "Backspace", "Tab", "Q", "W", "E",
                          "R", "T", "Z", "U", "I", "O", "P", "[", "]", "Enter", "Lctrl",
                          "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", "`",
@@ -24,7 +25,21 @@ unsigned char *sc_name3[] = {"ERROR", "Esc", "1", "2", "3", "4", "5", "6",
                          "AltSysReq", "???", "???", "F11", "F12",
                          "UP_ARROW", "DOWN_ARROW", "LEFT_ARROW", "RIGHT_ARROW"};
 
-unsigned char teststr[] = { "teststr" };
+const char sc_name8[][12] = {"VROOOM", "Esc", "1", "2", "3", "4", "5", "6",
+                         "7", "8", "9", "0", "-", "=", "Backspace", "Tab", "Q", "W", "E",
+                         "R", "T", "Z", "U", "I", "O", "P", "[", "]", "Enter", "Lctrl",
+                         "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", "`",
+                         "LShift", "\\", "Y", "X", "C", "V", "B", "N", "M", ",", ".",
+                         "/", "RShift", "Keypad *", "LAlt", "Spacebar", "CapsLock",
+                         "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10",
+                         "NumLock", "ScrollLock", "Keypad 7", "Keypad 8", "Keypad 9",
+                         "Keypad -", "Keypad 4", "Keypad 5", "Keypad 6", "Keypad +",
+                         "Keypad 1", "Keypad 2", "Keypad 3", "Keypad 0", "Keypad .",
+                         "AltSysReq", "???", "???", "F11", "F12",
+                         "UP_ARROW", "DOWN_ARROW", "LEFT_ARROW", "RIGHT_ARROW"};
+
+
+const char teststr[8] = {'t', 'e', 's', 't', 's', 't', 'r', 0};
 
 
 const char sc_ascii4[] = {'?', 0, '1', '2', '3', '4', '5', '6',
@@ -88,7 +103,9 @@ void draw_text_buffer() {
     printf("%s", text_buffer);
 }
 
-int editor_main() {
+int vgatest();
+
+int keycoder() {
 
     unsigned char *sc_name8[] = {"ERROR", "Esc", "1", "2", "3", "4", "5", "6",
                          "7", "8", "9", "0", "-", "=", "Backspace", "Tab", "Q", "W", "E",
@@ -107,27 +124,57 @@ int editor_main() {
         while (!(read_keyboard_status() & 0x01)) {}
         uint8_t scancode = read_keyboard_data();
 
-        void* ptr = teststr;
+        void* ptr = &teststr[0];
         unsigned char str[10];
 
+        printf("editor_main = ");
+        pointerToString(editor_main, str);
+        print_string(str);
+        print_nl();
+
+        printf("vgatest = ");
+        pointerToString(vgatest, str);
+        print_string(str);
+        print_nl();
+
+        printf("teststr = ");
         pointerToString(ptr, str);
         print_string(str);
         print_nl();
-        print_string(teststr);
+
+        printf("sc_name3 (global) = ");
+        pointerToString(sc_name3, str);
+        print_string(str);
+        print_nl();
+
+        printf("sc_name8 (local) = ");
+        pointerToString(sc_name8, str);
+        print_string(str);
+        print_nl();
+
+        printf("sc_name4 (global) = ");
+        pointerToString(sc_ascii4, str);
+        print_string(str);
+        print_nl();
+
+        printf("sc_name5 (global) = ");
+        pointerToString(sc_ascii5, str);
+        print_string(str);
+        print_nl();
 
         // Überprüfe den Tastaturstatus
         if (scancode < 128) {
             if (scancode == SC_ESC) {
-                editor_exit();
+               // editor_exit();
                 return 0;
             }
-            printf("%s\n", sc_name8[scancode]);
+            printf("%s\n", sc_name3[scancode]);
         }
     }
     sleep(33);
 }
 
-int editor_main2() {
+int editor_main() {
     while (1) {
         clear_screen();
         draw_status_bar();
@@ -162,5 +209,5 @@ int editor_main2() {
             }
         }
     }
-    sleep(33);
+    sleep(100);
 }

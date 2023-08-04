@@ -307,6 +307,7 @@ int sprintf( char *buffer, const char *format, ...)
                 intToString(value, intBuffer);
                 // Copy the string to the buffer
                 int i = 0;
+                if(value < 10) buffer[charsWritten++] = '0';
                 while (intBuffer[i] != '\0')
                 {
                     buffer[charsWritten++] = intBuffer[i++];
@@ -469,74 +470,3 @@ void hexDump(void *ptr, size_t size)
     }
 }
 
-void print_registers() {
-    unsigned int eax_val, ebx_val, ecx_val, edx_val;
-    unsigned int esi_val, edi_val, ebp_val, esp_val;
-    unsigned int eflags_val;
-    unsigned int int_no_val, err_code_val;
-    unsigned int ds_val;
-    void* eip_val;
-    unsigned int cs_val;
-
-    asm volatile(
-        "mov %[eax_val], %%eax \n"
-        "mov %[ebx_val], %%ebx \n"
-        "mov %[ecx_val], %%ecx \n"
-        "mov %[edx_val], %%edx \n"
-        "mov %[esi_val], %%esi \n"
-        "mov %[edi_val], %%edi \n"
-        "mov %[ebp_val], %%ebp \n"
-        "mov %[esp_val], %%esp \n"
-        "mov %%cs, %[cs_val] \n"
-        "pushf \n"
-        "pop %[eflags_val] \n"
-        "mov %%ds, %[ds_val] \n"
-        : [eax_val] "=g" (eax_val),
-          [ebx_val] "=g" (ebx_val),
-          [ecx_val] "=g" (ecx_val),
-          [edx_val] "=g" (edx_val),
-          [esi_val] "=g" (esi_val),
-          [edi_val] "=g" (edi_val),
-          [ebp_val] "=g" (ebp_val),
-          [esp_val] "=g" (esp_val),
-          [eflags_val] "=g" (eflags_val),
-          [ds_val] "=g" (ds_val),
-          [cs_val] "=g" (cs_val)
-        :
-        : "memory"
-    );
-
-    asm volatile(
-        "mov %[int_no_val], %[int_no_val] \n"
-        "mov %[err_code_val], 4(%[err_code_val]) \n"
-        : [int_no_val] "=&r" (int_no_val),
-          [err_code_val] "=&r" (err_code_val)
-    );
-
-    asm volatile(
-        "call 1f \n"
-        "1: pop %[eip_val] \n"
-        : [eip_val] "=g" (eip_val)
-    );
-
-
-    printf("Registers:\n");
-    printf("  DS: 0x%X\n", ds_val);
-    printf("  EDI: 0x%X\n", edi_val);
-    printf("  ESI: 0x%X\n", esi_val);
-    printf("  EBP: 0x%X\n", ebp_val);
-    printf("  ESP: 0x%X\n", esp_val);
-    printf("  EBX: 0x%X\n", ebx_val);
-    printf("  EDX: 0x%X\n", edx_val);
-    printf("  ECX: 0x%X\n", ecx_val);
-    printf("  EAX: 0x%X\n", eax_val);
-    printf("  INT_NO: 0x%X\n", int_no_val);
-    printf("  ERR_CODE: 0x%X\n", err_code_val);
-    printf("  EIP: %p\n", eip_val);
-    printf("  CS: 0x%X\n", cs_val);
-    printf("  EFLAGS: 0x%X\n", eflags_val);
-    printf("  USERESP: 0x%X\n", esp_val);
-    printf("  SS: 0x%X\n", ds_val);
-
-    return;
-}

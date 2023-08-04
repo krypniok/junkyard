@@ -74,6 +74,8 @@ const char sc_ascii3[] = {'?', '?', '!', '"', '§', '$', '%', '&',
                          '^', 'v', '<', '>'};
 
 
+
+
 void start_kernel() {
     set_color(WHITE_ON_BLACK);
     clear_screen();
@@ -103,6 +105,10 @@ void start_kernel() {
 
         print_string("Initializing timer.\n");
         init_timer(1000);
+
+        print_string("Initializing PS/2 mouse interface\n");;
+        //mouse_install();
+
         g_bKernelInitialised = true;
     }
 /*
@@ -221,29 +227,54 @@ void execute_search_command_chr(char *input) {
 void print_ascii_table() {
     int rows = 16;
     int columns = 16;
-    printf("+------+");
-    for (int col = 0; col < columns; col++) {
-        printf("----");
-    }
-    printf("+\n");
+    printf("%c", 0xC9);
+    printf("%c", 0xCD);
+    printf("%c", 0xCD);
+    printf("%c", 0xCD);
+    printf("%c", 0xCD);
+    printf("%c", 0xD1);
 
-    printf("|      |");
+   // printf("----+");
+    for (int col = 0; col < columns<<2; col++) {
+        //printf("----");
+        printf("%c", 0xCD);
+    }
+    printf("%c\n", 0xBB);
+    //printf("+\n");
+
+    printf("%c", 0xBA);
+    printf("    ");
+    printf("%c", 0xB3);
+    
     for (int col = 0; col < columns; col++) {
         printf(" ");
         printHexByte(col);
     }
-    printf("  |\n");
+    printf("%c\n", 0xBA);
+    //printf("|\n");
 
-    printf("+-----+");
-    for (int col = 0; col < columns; col++) {
-        printf("----");
+    //printf("+----+");
+    printf("%c", 0xC7);
+    printf("%c", 0xC4);
+    printf("%c", 0xC4);
+    printf("%c", 0xC4);
+    printf("%c", 0xC4);
+    printf("%c", 0xC5);
+
+    for (int col = 0; col < columns<<2; col++) {
+//        printf("----");
+        printf("%c", 0xC4);
     }
-    printf("+\n");
+//    printf("+\n");
+    printf("%c\n", 0xB6);
 
     for (int row = 0; row < rows; row++) {
-        printf("| ");
-        printHexByte(row);
-        printf("  |");
+//        printf("| ");
+        printf("%c ", 0xBA);
+        printHexByte(row<<4);
+//        printf("|");
+        printf("%c", 0xB3);
+
         for (int col = 0; col < columns; col++) {
             unsigned char c = row * columns + col;
             if (c == 0 || c == 10) // Skip the newline character '\n'
@@ -251,15 +282,185 @@ void print_ascii_table() {
             else
                 printf("  %c ", c);
         }
-        printf(" |\n");
+        printf("%c\n", 0xBA);
+        //printf("|\n");
     }
 
-    printf("+------+");
-    for (int col = 0; col < columns; col++) {
-        printf("----");
+    printf("%c", 0xC8);
+    printf("%c", 0xCD);
+    printf("%c", 0xCD);
+    printf("%c", 0xCD);
+    printf("%c", 0xCD);
+    printf("%c", 0xCF);
+
+    for (int col = 0; col < columns<<2; col++) {
+        //printf("----");
+        printf("%c", 0xCD);
     }
-    printf("+\n");
+    printf("%c\n", 0xBC);
+
+//    printf("+----+");
+//    for (int col = 0; col < columns; col++) {
+//        printf("----");
+//    }
+//    printf("+\n");
 }
+
+void formatTimestamp(unsigned int timestamp_ms) {
+    unsigned int ms_per_day = 86400000; // Millisekunden pro Tag
+    unsigned int ms_per_hour = 3600000; // Millisekunden pro Stunde
+    unsigned int ms_per_minute = 60000; // Millisekunden pro Minute
+    unsigned int ms_per_second = 1000;  // Millisekunden pro Sekunde
+
+    unsigned int days = timestamp_ms / ms_per_day;
+    timestamp_ms %= ms_per_day;
+
+    unsigned int hours = timestamp_ms / ms_per_hour;
+    timestamp_ms %= ms_per_hour;
+
+    unsigned int minutes = timestamp_ms / ms_per_minute;
+    timestamp_ms %= ms_per_minute;
+
+    unsigned int seconds = timestamp_ms / ms_per_second;
+    unsigned int milliseconds = timestamp_ms % ms_per_second;
+
+    // Ausgabe der Längenzeit
+    printf("%d Tage\n", days);
+    printf("%d Stunden\n", hours);
+    printf("%d Minuten\n", minutes);
+    printf("%d Sekunden\n", seconds);
+    printf("%d Millisekunden\n", milliseconds);
+}
+
+void formatTimestampHHMMSS(unsigned int timestamp_ms) {
+    unsigned int ms_per_day = 86400000; // Millisekunden pro Tag
+    unsigned int ms_per_hour = 3600000; // Millisekunden pro Stunde
+    unsigned int ms_per_minute = 60000; // Millisekunden pro Minute
+    unsigned int ms_per_second = 1000;  // Millisekunden pro Sekunde
+
+    unsigned int days = timestamp_ms / ms_per_day;
+    timestamp_ms %= ms_per_day;
+
+    unsigned int hours = timestamp_ms / ms_per_hour;
+    timestamp_ms %= ms_per_hour;
+
+    unsigned int minutes = timestamp_ms / ms_per_minute;
+    timestamp_ms %= ms_per_minute;
+
+    unsigned int seconds = timestamp_ms / ms_per_second;
+    unsigned int milliseconds = timestamp_ms % ms_per_second;
+
+    // Ausgabe der Längenzeit
+    printf("%d:", hours);
+    printf("%d:", minutes);
+    printf("%d", seconds);
+    print_nl();
+}
+
+// Funktion zum Verstecken des Cursors
+void hideCursor() {
+    // Index 0x0A entspricht dem Cursor-Form Control Register
+    port_byte_out(0x3D4, 0x0A);
+    unsigned char cursorControl = port_byte_in(0x3D5);
+
+    // Bit 5 auf 1 setzen, um den Cursor zu verstecken
+    cursorControl |= 0x20;
+
+    // Neuen Wert an das CRTC Data Register senden
+    port_byte_out(0x3D5, cursorControl);
+}
+
+// Funktion zum Anzeigen des Cursors
+void showCursor() {
+    // Index 0x0A entspricht dem Cursor-Form Control Register
+    port_byte_out(0x3D4, 0x0A);
+    unsigned char cursorControl = port_byte_in(0x3D5);
+
+    // Bit 5 auf 0 setzen, um den Cursor anzuzeigen
+    cursorControl &= 0xDF;
+
+    // Neuen Wert an das CRTC Data Register senden
+    port_byte_out(0x3D5, cursorControl);
+}
+
+void print_registers() {
+    unsigned int eax_val, ebx_val, ecx_val, edx_val;
+    unsigned int esi_val, edi_val, ebp_val, esp_val;
+    unsigned int eflags_val;
+    unsigned int int_no_val, err_code_val;
+    unsigned int ds_val;
+    void* eip_val;
+    unsigned int cs_val;
+    unsigned int useresp_val, ss_val;
+
+    asm volatile(
+        "mov %%eax, %[eax_val] \n"
+        "mov %%ebx, %[ebx_val] \n"
+        "mov %%ecx, %[ecx_val] \n"
+        "mov %%edx, %[edx_val] \n"
+        "mov %%esi, %[esi_val] \n"
+        "mov %%edi, %[edi_val] \n"
+        "mov %%ebp, %[ebp_val] \n"
+        "mov %%esp, %[esp_val] \n"
+        "mov %%cs, %[cs_val] \n"
+        "pushf \n"
+        "pop %[eflags_val] \n"
+        "mov %%ds, %[ds_val] \n"
+        "mov %%ss, %[ss_val] \n"
+        : [eax_val] "=g" (eax_val),
+          [ebx_val] "=g" (ebx_val),
+          [ecx_val] "=g" (ecx_val),
+          [edx_val] "=g" (edx_val),
+          [esi_val] "=g" (esi_val),
+          [edi_val] "=g" (edi_val),
+          [ebp_val] "=g" (ebp_val),
+          [esp_val] "=g" (esp_val),
+          [eflags_val] "=g" (eflags_val),
+          [ds_val] "=g" (ds_val),
+          [cs_val] "=g" (cs_val),
+          [ss_val] "=g" (ss_val)
+        :
+        : "memory"
+    );
+
+    asm volatile(
+        "mov %[int_no_val], %[int_no_val] \n"
+        "mov %[err_code_val], 4(%[err_code_val]) \n"
+        : [int_no_val] "=&r" (int_no_val),
+          [err_code_val] "=&r" (err_code_val)
+    );
+
+    asm volatile(
+        "call 1f \n"
+        "1: pop %[eip_val] \n"
+        : [eip_val] "=g" (eip_val)
+    );
+
+    asm volatile(
+        "mov %%esp, %[useresp_val] \n"
+        : [useresp_val] "=g" (useresp_val)
+    );
+
+    printf("  EAX: 0x%p\n", (void*)eax_val);
+    printf("  EBX: 0x%p\n", (void*)ebx_val);
+    printf("  ECX: 0x%p\n", (void*)ecx_val);
+    printf("  EDX: 0x%p\n", (void*)edx_val);
+    printf("  ESI: 0x%p\n", (void*)esi_val);
+    printf("  EDI: 0x%p\n", (void*)edi_val);
+    printf("  EBP: 0x%p\n", (void*)ebp_val);
+    printf("  ESP: 0x%p\n", (void*)esp_val);
+    printf("  EFLAGS: 0x%p\n", (void*)eflags_val);
+    printf("  DS: 0x%p\n", (void*)ds_val);
+    printf("  CS: 0x%p\n", (void*)cs_val);
+    printf("  SS: 0x%p\n", (void*)ss_val);
+    printf("  EIP: %p\n", eip_val);
+    printf("  INT_NO: 0x%p\n", (void*)int_no_val);
+    printf("  ERR_CODE: 0x%p\n", (void*)err_code_val);
+    printf("  USERESP: 0x%p\n", (void*)useresp_val);
+
+    return;
+}
+
 
 void execute_command(char *input) {
     int cursor = get_cursor();
@@ -267,11 +468,19 @@ void execute_command(char *input) {
         goto none;
     } else if (compare_string(input, "edit") == 0) {
         editor_main();
-    } else if (compare_string(input, "exit") == 0) {
+    } else if (compare_string(input, "uptime") == 0) {
+        formatTimestampHHMMSS(GetTicks());
+    } else if (compare_string(input, "hide") == 0) {
+        hideCursor();
+    } else if (compare_string(input, "show") == 0) {
+        showCursor();
+    } else if (compare_string(input, "regs") == 0) {
+        print_registers();
+     } else if (compare_string(input, "exit") == 0) {
         g_bKernelShouldStop = true;
     } else if (compare_string(input, "stage2") == 0) {
         printf("Loading Kernel to 0x100000.\n");
-        readFromHardDrive(2, 2779, 0x100000);
+        readFromHardDrive(53, 2779, 0x100000);
     } else if (strstr_custom(input, "dump") == input) {
         char* addressStr = strtok_custom(input + 5, " ");
         char* lengthStr = strtok_custom(NULL, " ");
