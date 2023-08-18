@@ -103,22 +103,8 @@ void draw_text_buffer() {
     printf("%s", text_buffer);
 }
 
-int vgatest();
-
 int keycoder() {
 
-    unsigned char *sc_name8[] = {"ERROR", "Esc", "1", "2", "3", "4", "5", "6",
-                         "7", "8", "9", "0", "-", "=", "Backspace", "Tab", "Q", "W", "E",
-                         "R", "T", "Z", "U", "I", "O", "P", "[", "]", "Enter", "Lctrl",
-                         "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", "`",
-                         "LShift", "\\", "Y", "X", "C", "V", "B", "N", "M", ",", ".",
-                         "/", "RShift", "Keypad *", "LAlt", "Spacebar", "CapsLock",
-                         "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10",
-                         "NumLock", "ScrollLock", "Keypad 7", "Keypad 8", "Keypad 9",
-                         "Keypad -", "Keypad 4", "Keypad 5", "Keypad 6", "Keypad +",
-                         "Keypad 1", "Keypad 2", "Keypad 3", "Keypad 0", "Keypad .",
-                         "AltSysReq", "???", "???", "F11", "F12",
-                         "UP_ARROW", "DOWN_ARROW", "LEFT_ARROW", "RIGHT_ARROW"};
     while (1) {
 
         while (!(read_keyboard_status() & 0x01)) {}
@@ -127,54 +113,19 @@ int keycoder() {
         void* ptr = &teststr[0];
         unsigned char str[10];
 
-        printf("editor_main = ");
-        pointerToString(editor_main, str);
-        print_string(str);
-        print_nl();
-
-        printf("vgatest = ");
-        pointerToString(vgatest, str);
-        print_string(str);
-        print_nl();
-
-        printf("teststr = ");
-        pointerToString(ptr, str);
-        print_string(str);
-        print_nl();
-
-        printf("sc_name3 (global) = ");
-        pointerToString(sc_name3, str);
-        print_string(str);
-        print_nl();
-
-        printf("sc_name8 (local) = ");
-        pointerToString(sc_name8, str);
-        print_string(str);
-        print_nl();
-
-        printf("sc_name4 (global) = ");
-        pointerToString(sc_ascii4, str);
-        print_string(str);
-        print_nl();
-
-        printf("sc_name5 (global) = ");
-        pointerToString(sc_ascii5, str);
-        print_string(str);
-        print_nl();
-
         // Überprüfe den Tastaturstatus
         if (scancode < 128) {
             if (scancode == SC_ESC) {
                // editor_exit();
                 return 0;
             }
-            printf("%s\n", sc_name3[scancode]);
+            printf("%s\n", sc_name8[scancode]);
         }
     }
     sleep(33);
 }
 
-int editor_main() {
+int editor_main2() {
     while (1) {
         clear_screen();
         draw_status_bar();
@@ -210,4 +161,69 @@ int editor_main() {
         }
     }
     sleep(100);
+}
+
+int editor_main() {
+    int cursor_pos = 0;
+
+    while (1) {
+        clear_screen();
+        draw_status_bar();
+        hexDump((void*)0x0, (int)256);
+
+        // Zeige den Cursor als "X" am aktuellen Position an
+        set_cursor(cursor_pos * 2 + 1);
+        printf("%c", 0x03);
+
+        while (!(read_keyboard_status() & 0x01)) {}
+        uint8_t scancode = read_keyboard_data();
+
+        int ch = scancode;
+        if (ch == 0 || ch == 0xE0) {
+            // Erweiterte Tastaturtaste, z.B. Pfeiltasten
+            ch = getch();
+            switch (ch) {
+                case 72:  // Pfeiltaste nach oben (Keypad 8)
+                    cursor_pos = (cursor_pos - 16) >= 0 ? cursor_pos - 16 : cursor_pos;
+                    break;
+                case 80:  // Pfeiltaste nach unten (Keypad 2)
+                    cursor_pos = (cursor_pos + 16) < text_buffer_index ? cursor_pos + 16 : cursor_pos;
+                    break;
+                case 75:  // Pfeiltaste nach links (Keypad 4)
+                    cursor_pos = (cursor_pos - 1) >= 0 ? cursor_pos - 1 : cursor_pos;
+                    break;
+                case 77:  // Pfeiltaste nach rechts (Keypad 6)
+                    cursor_pos = (cursor_pos + 1) < text_buffer_index ? cursor_pos + 1 : cursor_pos;
+                    break;
+                // Füge weitere Tastensteuerungen hinzu, falls nötig
+                default:
+                    break;
+            }
+        } else if (ch == 27) {
+            // ESC-Taste
+            editor_exit();
+            return;
+        } else if ((ch >= '0' && ch <= '9') || (ch >= 'A' && ch <= 'F')) {
+            // Hexadezimale Eingabe
+            if (cursor_pos < text_buffer_index) {
+                text_buffer[cursor_pos] = ch;
+                cursor_pos++;
+                draw_text_buffer();
+            }
+        } else if (ch == '\b') {
+            // Backspace-Taste
+            if (cursor_pos > 0) {
+                cursor_pos--;
+                delete_character();
+            }
+        } else if (ch == '\r') {
+            // Enter-Taste
+            insert_character('\n');
+            cursor_pos += 2; // Der Cursor wird nach dem Einfügen von '\n' um zwei Positionen verschoben
+        } else {
+            // Zeichen eingeben
+            insert_character(ch);
+            cursor_pos++; // Der Cursor wird nach dem Einfügen des Zeichens um eine Position verschoben
+        }
+    }
 }

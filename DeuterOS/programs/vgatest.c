@@ -19,7 +19,7 @@ To do:
 #define peekb(S, O) (*((unsigned char*)((unsigned long)(S) + (O))))
 #define pokeb(S, O, V) (*((unsigned char*)((unsigned long)(S) + (O))) = (V))
 #define pokew(S, O, V) (*((unsigned short*)((unsigned long)(S) + (O))) = (V))
-#define _vmemwr(DS, DO, S, N) byteMove((void*)((unsigned long)(DS) + (DO)), (void*)(S), N)
+#define _vmemwr(DS, DO, S, N) memcpy((void*)((unsigned long)(DS) + (DO)), (void*)(S), N)
 
 #define	VGA_AC_INDEX		0x3C0
 #define	VGA_AC_WRITE		0x3C0

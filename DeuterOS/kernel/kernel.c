@@ -166,13 +166,13 @@ void* search_byte(void* start_address, size_t size, unsigned char byteToFind) {
 }
 
 void execute_search_command_str(char *input) {
-    char* addressStr = strtok_custom(input + byteStringLength("searchs") + 1, " ");
-    char* sizeStr = strtok_custom(NULL, " ");
-    char* searchString = strtok_custom(NULL, " ");
+    char* addressStr = strtok(input + strlen("searchs") + 1, " ");
+    char* sizeStr = strtok(NULL, " ");
+    char* searchString = strtok(NULL, " ");
 
     if (addressStr != NULL && sizeStr != NULL && searchString != NULL) {
-        uint32_t address = strtoul_custom(addressStr, NULL, 0);
-        uint32_t size = strtoul_custom(sizeStr, NULL, 0);
+        uint32_t address = strtoul(addressStr, NULL, 0);
+        uint32_t size = strtoul(sizeStr, NULL, 0);
 
         // Call the search_string function to find the string
         void* result = search_string((void*)address, size, searchString);
@@ -193,14 +193,14 @@ void execute_search_command_str(char *input) {
 }
 
 void execute_search_command_chr(char *input) {
-    char* addressStr = strtok_custom(input + byteStringLength("searchb") + 1, " ");
-    char* sizeStr = strtok_custom(NULL, " ");
-    char* byteStr = strtok_custom(NULL, " ");
+    char* addressStr = strtok(input + strlen("searchb") + 1, " ");
+    char* sizeStr = strtok(NULL, " ");
+    char* byteStr = strtok(NULL, " ");
 
     if (addressStr != NULL && sizeStr != NULL && byteStr != NULL) {
-        uint32_t address = strtoul_custom(addressStr, NULL, 0);
-        uint32_t size = strtoul_custom(sizeStr, NULL, 0);
-        uint32_t byte = strtoul_custom(byteStr, NULL, 0);
+        uint32_t address = strtoul(addressStr, NULL, 0);
+        uint32_t size = strtoul(sizeStr, NULL, 0);
+        uint32_t byte = strtoul(byteStr, NULL, 0);
         unsigned char byteToFind = (unsigned char)byte;
 
         printf("searching %d\n", byteToFind);
@@ -383,84 +383,6 @@ void showCursor() {
     port_byte_out(0x3D5, cursorControl);
 }
 
-void print_registers() {
-    unsigned int eax_val, ebx_val, ecx_val, edx_val;
-    unsigned int esi_val, edi_val, ebp_val, esp_val;
-    unsigned int eflags_val;
-    unsigned int int_no_val, err_code_val;
-    unsigned int ds_val;
-    void* eip_val;
-    unsigned int cs_val;
-    unsigned int useresp_val, ss_val;
-
-    asm volatile(
-        "mov %%eax, %[eax_val] \n"
-        "mov %%ebx, %[ebx_val] \n"
-        "mov %%ecx, %[ecx_val] \n"
-        "mov %%edx, %[edx_val] \n"
-        "mov %%esi, %[esi_val] \n"
-        "mov %%edi, %[edi_val] \n"
-        "mov %%ebp, %[ebp_val] \n"
-        "mov %%esp, %[esp_val] \n"
-        "mov %%cs, %[cs_val] \n"
-        "pushf \n"
-        "pop %[eflags_val] \n"
-        "mov %%ds, %[ds_val] \n"
-        "mov %%ss, %[ss_val] \n"
-        : [eax_val] "=g" (eax_val),
-          [ebx_val] "=g" (ebx_val),
-          [ecx_val] "=g" (ecx_val),
-          [edx_val] "=g" (edx_val),
-          [esi_val] "=g" (esi_val),
-          [edi_val] "=g" (edi_val),
-          [ebp_val] "=g" (ebp_val),
-          [esp_val] "=g" (esp_val),
-          [eflags_val] "=g" (eflags_val),
-          [ds_val] "=g" (ds_val),
-          [cs_val] "=g" (cs_val),
-          [ss_val] "=g" (ss_val)
-        :
-        : "memory"
-    );
-
-    asm volatile(
-        "mov %[int_no_val], %[int_no_val] \n"
-        "mov %[err_code_val], 4(%[err_code_val]) \n"
-        : [int_no_val] "=&r" (int_no_val),
-          [err_code_val] "=&r" (err_code_val)
-    );
-
-    asm volatile(
-        "call 1f \n"
-        "1: pop %[eip_val] \n"
-        : [eip_val] "=g" (eip_val)
-    );
-
-    asm volatile(
-        "mov %%esp, %[useresp_val] \n"
-        : [useresp_val] "=g" (useresp_val)
-    );
-
-    printf("  EAX: 0x%p\n", (void*)eax_val);
-    printf("  EBX: 0x%p\n", (void*)ebx_val);
-    printf("  ECX: 0x%p\n", (void*)ecx_val);
-    printf("  EDX: 0x%p\n", (void*)edx_val);
-    printf("  ESI: 0x%p\n", (void*)esi_val);
-    printf("  EDI: 0x%p\n", (void*)edi_val);
-    printf("  EBP: 0x%p\n", (void*)ebp_val);
-    printf("  ESP: 0x%p\n", (void*)esp_val);
-    printf("  EFLAGS: 0x%p\n", (void*)eflags_val);
-    printf("  DS: 0x%p\n", (void*)ds_val);
-    printf("  CS: 0x%p\n", (void*)cs_val);
-    printf("  SS: 0x%p\n", (void*)ss_val);
-    printf("  EIP: %p\n", eip_val);
-    printf("  INT_NO: 0x%p\n", (void*)int_no_val);
-    printf("  ERR_CODE: 0x%p\n", (void*)err_code_val);
-    printf("  USERESP: 0x%p\n", (void*)useresp_val);
-
-    return;
-}
-
 
 void execute_command(char *input) {
     int cursor = get_cursor();
@@ -476,53 +398,55 @@ void execute_command(char *input) {
         showCursor();
     } else if (compare_string(input, "regs") == 0) {
         print_registers();
+    } else if (compare_string(input, "keycodes") == 0) {
+        keycoder();
      } else if (compare_string(input, "exit") == 0) {
         g_bKernelShouldStop = true;
     } else if (compare_string(input, "stage2") == 0) {
         printf("Loading Kernel to 0x100000.\n");
         readFromHardDrive(53, 2779, 0x100000);
-    } else if (strstr_custom(input, "dump") == input) {
-        char* addressStr = strtok_custom(input + 5, " ");
-        char* lengthStr = strtok_custom(NULL, " ");
+    } else if (strstr(input, "dump") == input) {
+        char* addressStr = strtok(input + 5, " ");
+        char* lengthStr = strtok(NULL, " ");
 
         if (addressStr != NULL && lengthStr != NULL) {
-            uint32_t address = strtoul_custom(addressStr, NULL, 0);
-            uint16_t length = strtoul_custom(lengthStr, NULL, 0);
+            uint32_t address = strtoul(addressStr, NULL, 0);
+            uint16_t length = strtoul(lengthStr, NULL, 0);
 
             // clear_screen();
             hexDump((void*)address, (int)length);
         } else {
             print_string("Invalid parameters for 'dump address length' command.\n");
         }
-    } else if (strstr_custom(input, "memset") == input) {
-        char* addressStr = strtok_custom(input + 7, " ");
-        char* lengthStr = strtok_custom(NULL, " ");
+    } else if (strstr(input, "memset") == input) {
+        char* addressStr = strtok(input + 7, " ");
+        char* lengthStr = strtok(NULL, " ");
 
         if (addressStr != NULL && lengthStr != NULL) {
-            uint32_t address = strtoul_custom(addressStr, NULL, 0);
-            uint16_t length = (uint16_t)strtoul_custom(lengthStr, NULL, 0);
-            byteSet((void*)address, length, 1);
+            uint32_t address = strtoul(addressStr, NULL, 0);
+            uint16_t length = (uint16_t)strtoul(lengthStr, NULL, 0);
+            memset((void*)address, length, 1);
         } else {
             print_string("Invalid parameters for 'memset dest value' command.\n");
         }
-    } else if (strstr_custom(input, "memcpy") == input) {
-        char* addressStr = strtok_custom(input + 7, " ");
-        char* addressStr2 = strtok_custom(NULL, " ");
-        char* lengthStr = strtok_custom(NULL, " ");
+    } else if (strstr(input, "memcpy") == input) {
+        char* addressStr = strtok(input + 7, " ");
+        char* addressStr2 = strtok(NULL, " ");
+        char* lengthStr = strtok(NULL, " ");
 
         if (addressStr != NULL && addressStr2 != NULL && lengthStr != NULL) {
-            uint32_t address = strtoul_custom(addressStr, NULL, 0);
-            uint32_t address2 = strtoul_custom(addressStr2, NULL, 0);
-            uint16_t length = (uint16_t)strtoul_custom(lengthStr, NULL, 0);
-            byteMove((void*)address2, (void*)address, length);
+            uint32_t address = strtoul(addressStr, NULL, 0);
+            uint32_t address2 = strtoul(addressStr2, NULL, 0);
+            uint16_t length = (uint16_t)strtoul(lengthStr, NULL, 0);
+            memcpy((void*)address2, (void*)address, length);
         } else {
             print_string("Invalid parameters for 'memcpy source dest length' command.\n");
         }
-    } else if (strstr_custom(input, "run") == input) {
-        char* addressStr = strtok_custom(input + 4, " ");
+    } else if (strstr(input, "run") == input) {
+        char* addressStr = strtok(input + 4, " ");
 
         if (addressStr != NULL) {
-            uint32_t address = strtoul_custom(addressStr, NULL, 0);
+            uint32_t address = strtoul(addressStr, NULL, 0);
             // Create a function pointer and assign the address to it
             FilePointer funcPtr = (FilePointer)address;
             // Call the function using the function pointer
@@ -530,10 +454,10 @@ void execute_command(char *input) {
         } else {
             print_string("Invalid parameters for 'run address' command.\n");
         }
-    } else if (strstr_custom(input, "ascii") == input) {
+    } else if (strstr(input, "ascii") == input) {
         print_ascii_table();
-     } else if (strstr_custom(input, "send") == input) {
-        char* param1 = strtok_custom(input + byteStringLength("send") + 1, " ");
+     } else if (strstr(input, "send") == input) {
+        char* param1 = strtok(input + strlen("send") + 1, " ");
 
         if (param1 != NULL) {
             // Find the corresponding file entry
@@ -543,7 +467,7 @@ void execute_command(char *input) {
                 print_string("tst");
                 print_nl();
                 name1();
-                if (strstr_custom(param1, "name1") == param1) {
+                if (strstr(param1, "name1") == param1) {
                     // Execute the function pointer if it is not NULL
                     if (filetable[i].filepointer != NULL) {
                         //FilePointer funcPtr = filetable[i].filepointer;
@@ -566,9 +490,9 @@ void execute_command(char *input) {
             print_string("Invalid parameters for 'send' command.\n");
         }
     }
-    else if (strstr_custom(input, "searchb") == input) {
+    else if (strstr(input, "searchb") == input) {
         execute_search_command_chr(input);
-    } else if (strstr_custom(input, "searchs") == input) {
+    } else if (strstr(input, "searchs") == input) {
         execute_search_command_str(input);
     } else if (compare_string(input, "clr") == 0 || compare_string(input, "rst") == 0) {
         clear_screen();

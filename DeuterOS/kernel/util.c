@@ -55,3 +55,81 @@ int compare_string(char s1[], char s2[]) {
     }
     return s1[i] - s2[i];
 }
+
+void print_registers() {
+    unsigned int eax_val, ebx_val, ecx_val, edx_val;
+    unsigned int esi_val, edi_val, ebp_val, esp_val;
+    unsigned int eflags_val;
+    unsigned int int_no_val, err_code_val;
+    unsigned int ds_val;
+    void* eip_val;
+    unsigned int cs_val;
+    unsigned int useresp_val, ss_val;
+
+    asm volatile(
+        "mov %%eax, %[eax_val] \n"
+        "mov %%ebx, %[ebx_val] \n"
+        "mov %%ecx, %[ecx_val] \n"
+        "mov %%edx, %[edx_val] \n"
+        "mov %%esi, %[esi_val] \n"
+        "mov %%edi, %[edi_val] \n"
+        "mov %%ebp, %[ebp_val] \n"
+        "mov %%esp, %[esp_val] \n"
+        "mov %%cs, %[cs_val] \n"
+        "pushf \n"
+        "pop %[eflags_val] \n"
+        "mov %%ds, %[ds_val] \n"
+        "mov %%ss, %[ss_val] \n"
+        : [eax_val] "=g" (eax_val),
+          [ebx_val] "=g" (ebx_val),
+          [ecx_val] "=g" (ecx_val),
+          [edx_val] "=g" (edx_val),
+          [esi_val] "=g" (esi_val),
+          [edi_val] "=g" (edi_val),
+          [ebp_val] "=g" (ebp_val),
+          [esp_val] "=g" (esp_val),
+          [eflags_val] "=g" (eflags_val),
+          [ds_val] "=g" (ds_val),
+          [cs_val] "=g" (cs_val),
+          [ss_val] "=g" (ss_val)
+        :
+        : "memory"
+    );
+
+    asm volatile(
+        "mov %[int_no_val], %[int_no_val] \n"
+        "mov %[err_code_val], 4(%[err_code_val]) \n"
+        : [int_no_val] "=&r" (int_no_val),
+          [err_code_val] "=&r" (err_code_val)
+    );
+
+    asm volatile(
+        "call 1f \n"
+        "1: pop %[eip_val] \n"
+        : [eip_val] "=g" (eip_val)
+    );
+
+    asm volatile(
+        "mov %%esp, %[useresp_val] \n"
+        : [useresp_val] "=g" (useresp_val)
+    );
+
+    printf("  EAX: 0x%p\n", (void*)eax_val);
+    printf("  EBX: 0x%p\n", (void*)ebx_val);
+    printf("  ECX: 0x%p\n", (void*)ecx_val);
+    printf("  EDX: 0x%p\n", (void*)edx_val);
+    printf("  ESI: 0x%p\n", (void*)esi_val);
+    printf("  EDI: 0x%p\n", (void*)edi_val);
+    printf("  EBP: 0x%p\n", (void*)ebp_val);
+    printf("  ESP: 0x%p\n", (void*)esp_val);
+    printf("  EFLAGS: 0x%p\n", (void*)eflags_val);
+    printf("  DS: 0x%p\n", (void*)ds_val);
+    printf("  CS: 0x%p\n", (void*)cs_val);
+    printf("  SS: 0x%p\n", (void*)ss_val);
+    printf("  EIP: %p\n", eip_val);
+    printf("  INT_NO: 0x%p\n", (void*)int_no_val);
+    printf("  ERR_CODE: 0x%p\n", (void*)err_code_val);
+    printf("  USERESP: 0x%p\n", (void*)useresp_val);
+
+    return;
+}

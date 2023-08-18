@@ -1,53 +1,18 @@
 #include "string.h"
 
-void byteMove(void* dest, const void* src, size_t numBytes) {
-    char* destPtr = (char*)dest;
-    const char* srcPtr = (const char*)src;
 
-    if (destPtr < srcPtr) {
-        while (numBytes--)
-            *destPtr++ = *srcPtr++;
-    } else {
-        destPtr += numBytes;
-        srcPtr += numBytes;
-        while (numBytes--)
-            *--destPtr = *--srcPtr;
-    }
-}
-
-void byteSet(void* ptr, int value, size_t numBytes) {
-    char* bytePtr = (char*)ptr;
-    char byteValue = (char)value;
-
-    while (numBytes--)
-        *bytePtr++ = byteValue;
-}
-
-size_t byteStringLength(const char* str) {
+size_t strlen(const char* str) {
     const char* ptr = str;
     while (*ptr)
         ptr++;
     return ptr - str;
 }
 
-int byteMemcmp(const void* ptr1, const void* ptr2, size_t numBytes) {
-    const unsigned char* bytePtr1 = (const unsigned char*)ptr1;
-    const unsigned char* bytePtr2 = (const unsigned char*)ptr2;
-
-    for (size_t i = 0; i < numBytes; i++) {
-        if (bytePtr1[i] != bytePtr2[i])
-            return bytePtr1[i] - bytePtr2[i];
-    }
-
-    return 0;
-}
-
-int byteStrcmp(const char* str1, const char* str2) {
+int strcmp(const char* str1, const char* str2) {
     while (*str1 && (*str1 == *str2)) {
         str1++;
         str2++;
     }
-
     return *(unsigned char*)str1 - *(unsigned char*)str2;
 }
 
@@ -75,7 +40,7 @@ int atoi(const char *str) {
     return sign * result;
 }
 
-unsigned long strtoul_custom(const char* str, char** endptr, int base) {
+unsigned long strtoul(const char* str, char** endptr, int base) {
     unsigned long result = 0;
     bool isNegative = false;
 
@@ -143,7 +108,7 @@ unsigned long strtoul_custom(const char* str, char** endptr, int base) {
     return result;
 }
 
-char* strstr_custom(const char* haystack, const char* needle) {
+char* strstr(const char* haystack, const char* needle) {
     if (*needle == '\0') {
         return (char*)haystack;
     }
@@ -164,7 +129,7 @@ char* strstr_custom(const char* haystack, const char* needle) {
     return NULL;
 }
 
-char* strchr_custom(const char* str, int ch) {
+char* strchr(const char* str, int ch) {
     while (*str != '\0') {
         if (*str == ch) {
             return (char*)str;
@@ -174,7 +139,7 @@ char* strchr_custom(const char* str, int ch) {
     return NULL;
 }
 
-char* strtok_custom(char* str, const char* delim) {
+char* strtok(char* str, const char* delim) {
     static char* savedStr = NULL;
     if (str != NULL) {
         savedStr = str;
@@ -184,7 +149,7 @@ char* strtok_custom(char* str, const char* delim) {
     }
     char* token = savedStr;
     while (*savedStr != '\0') {
-        if (strchr_custom(delim, *savedStr) != NULL) {
+        if (strchr(delim, *savedStr) != NULL) {
             *savedStr = '\0';
             savedStr++;
             return token;
@@ -195,10 +160,10 @@ char* strtok_custom(char* str, const char* delim) {
 }
 
 void* search_string(void* start_address, size_t size, const char* str) {
-    size_t str_len = byteStringLength(str);
+    size_t str_len = strlen(str);
 
     for (size_t i = 0; i < size - str_len + 1; i++) {
-        if (byteMemcmp(start_address + i, str, str_len) == 0) {
+        if (memcmp(start_address + i, str, str_len) == 0) {
             // String found, return the address
             return start_address + i;
         }
@@ -206,4 +171,50 @@ void* search_string(void* start_address, size_t size, const char* str) {
 
     // String not found in the given range
     return NULL;
+}
+
+char* strdup(const char *str) {
+    size_t len = strlen(str) + 1;
+    char *copy = (char *)malloc(len);
+    if (copy) {
+        strcpy(copy, str);
+    }
+    return copy;
+}
+
+char* strcpy(char *dest, const char *src) {
+    char *original_dest = dest;
+    while (*src) {
+        *dest = *src;
+        dest++;
+        src++;
+    }
+    *dest = '\0';
+    return original_dest;
+}
+
+char* strncpy(char *dest, const char *src, size_t n) {
+    size_t i;
+    for (i = 0; i < n && src[i] != '\0'; i++) {
+        dest[i] = src[i];
+    }
+    // Falls n größer als die Länge von src ist, fülle den Rest von dest mit null Bytes
+    for (; i < n; i++) {
+        dest[i] = '\0';
+    }
+    return dest;
+}
+
+char * strcat(char *dest, const char *src) {
+    char *original_dest = dest;
+    while (*dest) {
+        dest++;
+    }
+    while (*src) {
+        *dest = *src;
+        dest++;
+        src++;
+    }
+    *dest = '\0';
+    return original_dest;
 }

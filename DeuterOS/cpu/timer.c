@@ -20,12 +20,14 @@ unsigned int GetTicks() {
     return tick;
 }
 
-
 void sub_timer_callback() {
-    static int count=0;
-    // Do something when the sub-timer expires
-    // For example: printf("Sub-timer expired!\n");
-    printf("%d", count++);
+    static int ff=0;
+    ff = (ff == 0) ? 1 : 0;
+    printChar(79, 24, 0x0F, (ff == 0) ? 0x01 : 0x02);
+    int cursor = get_cursor();
+    set_cursor(144);
+    formatTimestampHHMMSS(tick);
+    set_cursor(cursor);
 }
 
 // init_custom_timer
@@ -42,7 +44,7 @@ void init_timer(uint32_t freq) {
     port_byte_out(0x40, low);
     port_byte_out(0x40, high);
 
-    add_sub_timer(3000, sub_timer_callback);
+    add_sub_timer(100, sub_timer_callback);
 }
 
 #define MAX_SUB_TIMERS 10
