@@ -45,6 +45,7 @@ void set_char_at_video_memory(char character, int offset) {
     vidmem[offset + 1] = g_ConsoleColor;
 }
 
+
 int scroll_ln(int offset) {
     memory_copy(
             (uint8_t * )(get_offset(0, 1) + VIDEO_ADDRESS),

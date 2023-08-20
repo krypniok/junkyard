@@ -76,6 +76,7 @@ static void keyboard_callback(registers_t *regs) {
         if (extended_scancode) {
             // Handle extended scancode here, if needed
             extended_scancode = false; // Reset extended scancode flag
+
         } else {
             // Handle regular scancode here
         }

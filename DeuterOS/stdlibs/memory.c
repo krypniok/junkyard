@@ -109,17 +109,6 @@ void free(void* ptr) {
     free_list = block;
 }
 
-void* memcpy3(void* destination, const void* source, size_t num) {
-    unsigned char* dest = (unsigned char*)destination;
-    const unsigned char* src = (const unsigned char*)source;
-
-    for (size_t i = 0; i < num; i++) {
-        dest[i] = src[i];
-    }
-
-    return destination;
-}
-
 // Funktion zum Ändern der Größe eines allokierten Speicherblocks
 void* realloc(void* ptr, size_t new_size) {
     if (ptr == NULL) {
@@ -167,40 +156,4 @@ void list_allocated_blocks() {
         printf("Block at %p, Size: %zu\n", (void*)curr, curr->size);
         curr = curr->next;
     }
-}
-
-void memcpy2(void* dest, const void* src, size_t numBytes) {
-    char* destPtr = (char*)dest;
-    const char* srcPtr = (const char*)src;
-
-    if (destPtr < srcPtr) {
-        while (numBytes--)
-            *destPtr++ = *srcPtr++;
-    } else {
-        destPtr += numBytes;
-        srcPtr += numBytes;
-        while (numBytes--)
-            *--destPtr = *--srcPtr;
-    }
-}
-
-void memset2(void* ptr, int value, size_t numBytes) {
-    char* bytePtr = (char*)ptr;
-    char byteValue = (char)value;
-
-    while (numBytes--)
-        *bytePtr++ = byteValue;
-}
-
-
-int memcmp2(const void* ptr1, const void* ptr2, size_t numBytes) {
-    const unsigned char* bytePtr1 = (const unsigned char*)ptr1;
-    const unsigned char* bytePtr2 = (const unsigned char*)ptr2;
-
-    for (size_t i = 0; i < numBytes; i++) {
-        if (bytePtr1[i] != bytePtr2[i])
-            return bytePtr1[i] - bytePtr2[i];
-    }
-
-    return 0;
 }

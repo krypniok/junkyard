@@ -39,9 +39,6 @@ const char sc_name8[][12] = {"VROOOM", "Esc", "1", "2", "3", "4", "5", "6",
                          "UP_ARROW", "DOWN_ARROW", "LEFT_ARROW", "RIGHT_ARROW"};
 
 
-const char teststr[8] = {'t', 'e', 's', 't', 's', 't', 'r', 0};
-
-
 const char sc_ascii4[] = {'?', 0, '1', '2', '3', '4', '5', '6',
                          '7', '8', '9', '0', '-', '=', 'ß', '?', 'q', 'w', 'e', 'r', 't', 'z',
                          'u', 'i', 'o', 'p', '[', ']', '?', '?', 'a', 's', 'd', 'f', 'g',
@@ -110,8 +107,8 @@ int keycoder() {
         while (!(read_keyboard_status() & 0x01)) {}
         uint8_t scancode = read_keyboard_data();
 
-        void* ptr = &teststr[0];
-        unsigned char str[10];
+        printf("%s\n", sc_name3[scancode]);
+        printf("test\n");
 
         // Überprüfe den Tastaturstatus
         if (scancode < 128) {
@@ -119,7 +116,6 @@ int keycoder() {
                // editor_exit();
                 return 0;
             }
-            printf("%s\n", sc_name8[scancode]);
         }
     }
     sleep(33);

@@ -23,10 +23,10 @@ unsigned int GetTicks() {
 void sub_timer_callback() {
     static int ff=0;
     ff = (ff == 0) ? 1 : 0;
-    printChar(79, 24, 0x0F, (ff == 0) ? 0x01 : 0x02);
+ //   printChar(79, 24, 0x0F, (ff == 0) ? 0x01 : 0x02);
     int cursor = get_cursor();
     set_cursor(144);
-    formatTimestampHHMMSS(tick);
+  //  formatTimestampHHMMSS(tick);
     set_cursor(cursor);
 }
 

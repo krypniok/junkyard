@@ -2,7 +2,4 @@
 #include <stddef.h>
 
 // Private Functions
- bool HandleCheats(unsigned char key);
-
-
-
+ bool HandleKeypress(unsigned char input);

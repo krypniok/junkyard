@@ -74,6 +74,7 @@ void intToStringHex(int value, char *buffer, int numDigits);
 void charToString(unsigned char value, char *buffer);
 
 void pointerToString(void *ptr, char *buffer);
+
 int sprintf( char *buffer, const char *format, ...);
 void printf(const char *format, ...);
 

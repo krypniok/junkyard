@@ -6,53 +6,54 @@
 
 #include "../stdlibs/string.h"
 
-#define BUFFER_SIZE 16
 
-void processBuffer(char* buffer) {
-    // Hier wird deine Funktion ausgelöst, wenn die Zeichenkette gefunden wurde.
-    int parameter = atoi(buffer + 6);  // Extrahiere den Integer-Parameter aus dem Buffer
-    
+#define MAX_BUFFER_LENGTH 10
 
-	printf("Parameter gefunden: %d\n", parameter);
 
+bool is_system_pattern(const char *buffer) {
+    return strncmp(buffer, "system", strlen("system")) == 0 &&
+           isdigit(buffer[strlen("system")]) &&
+           isdigit(buffer[strlen("system") + 1]) &&
+           isdigit(buffer[strlen("system") + 2]) &&
+           isdigit(buffer[strlen("system") + 3]);
 }
 
-void addToBuffer(char* buffer, char ch) {
-    // Hier wird das Zeichen an den Buffer angehängt.
-    size_t len = strlen(buffer);
-
-    if (len >= BUFFER_SIZE) {
-        // Wenn der Buffer voll ist, wird das älteste Zeichen entfernt.
-        memcpy(buffer, buffer + 1, BUFFER_SIZE - 1);
-        buffer[BUFFER_SIZE - 1] = ch;
-    } else {
-        buffer[len] = ch;
-        buffer[len + 1] = '\0';
-    }
+void print_buffer(unsigned char* buffer) {
+    int cursor = get_cursor();
+    set_cursor(4000 - 160);
+    print_string(buffer);
+    set_cursor(cursor);
 }
 
-void emptyBuffer(char* buffer) {
-    // Hier wird der Buffer geleert.
-    memset(buffer, 0, BUFFER_SIZE);
+char buffer[MAX_BUFFER_LENGTH + 1];
+int buffer_length = 0;
+//int input;
+
+void process_value(const char *value) {
+    print_buffer(buffer);    
+    //printf("Gefundener Wert: %s\n", value);
+    // Hier kannst du deine gewünschte Aktion ausführen, z.B. system aufrufen
 }
 
-    char buffer[BUFFER_SIZE] = "\0";
-    const char* targetString = "system####"; // Die zu suchende Zeichenkette
-
-bool HandleCheats(unsigned char ch) {
-    size_t targetLength = strlen(targetString);
-    addToBuffer(buffer, ch);
-    if (strlen(buffer) >= targetLength) {
-        int i;
-        for (i = 0; i < targetLength; i++) {
-            if (targetString[i] != '#' && targetString[i] != buffer[i]) {
-                break;
-            }
-            if (i == targetLength) {
-                processBuffer(buffer);
-                emptyBuffer(buffer);
+bool HandleKeypress(unsigned char input) {
+        if (input != 0) {
+            char lowercase_input = tolower(input);
+            if (isalnum(lowercase_input) && buffer_length < MAX_BUFFER_LENGTH) {
+                buffer[buffer_length++] = lowercase_input;
+                buffer[buffer_length] = '\0';
+                
+                if (is_system_pattern(buffer)) {
+                    if (buffer_length == strlen("system") + 4) {
+                        char value[5];
+                        strncpy(value, buffer + strlen("system"), 4);
+                        value[4] = '\0';
+                        //buffer[0] = '\0';
+                        process_value(value);
+                        buffer_length = 0;
+                    }
+                }
+            } else {
+                buffer_length = 0;
             }
         }
-    }
 }
-

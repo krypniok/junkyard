@@ -100,6 +100,8 @@ void start_kernel() {
         print_string("Initializing dynamic memory.\n");
         init_dynamic_mem();
 
+        init_memory();
+
         print_string("A20 Line was activated by the MBR.\n");
         // enable_a20_line();
 
@@ -132,24 +134,8 @@ end_of_kernel:
     printf("P.S. Why is this still working when the CPU is officially stopped (hlt) ?\n");
 }
 
-void name1() {
-    // Code for name1 function
-    print_string("function name1");
-    print_nl();
-}
-
-void name2() {
-    // Code for name2 function
-}
-
 typedef void (*FilePointer)();
 
-typedef struct {
-    unsigned char filename[32];
-    FilePointer filepointer;
-} fileentry;
-
-fileentry filetable[2] = { {"name1", name1}, {"name2", name2} };
 
 // Helper function to search for a byte within a memory range
 void* search_byte(void* start_address, size_t size, unsigned char byteToFind) {
@@ -384,28 +370,84 @@ void showCursor() {
 }
 
 
+int memtest() {
+    void* mem = malloc(256);
+    void* mem2 = malloc(128);
+    printf("Allocated blocks:\n");
+    list_allocated_blocks();
+    free(mem);
+    printf("\nAllocated blocks after freeing mem:\n");
+    list_allocated_blocks();
+    free(mem2);
+    printf("\nAllocated blocks after freeing mem2:\n");
+    list_allocated_blocks();
+    return 0;
+}
+
 void execute_command(char *input) {
     int cursor = get_cursor();
-    if (compare_string(input, "") == 0) {
+    if (strcmp(input, "") == 0)
+    {
         goto none;
-    } else if (compare_string(input, "edit") == 0) {
+    }
+    else if (strcmp(input, "memtest") == 0)
+    {
+        memtest();
+    }
+    else if (strcmp(input, "random") == 0)
+    {
+        init_random();
+        for (int i = 0; i < 10; i++) {
+            printf("%d\n", rand_range(1, 100)); // Beispiel: Zahlen zwischen 1 und 100
+        }
+    }  
+    else if (strcmp(input, "edit") == 0)
+    {
         editor_main();
-    } else if (compare_string(input, "uptime") == 0) {
+    }
+    else if (strcmp(input, "snake") == 0)
+    {
+        snake_main();
+    }
+    else if (strcmp(input, "uptime") == 0)
+    {
         formatTimestampHHMMSS(GetTicks());
-    } else if (compare_string(input, "hide") == 0) {
+    }
+    else if (strcmp(input, "hide") == 0)
+    {
         hideCursor();
-    } else if (compare_string(input, "show") == 0) {
+    }
+    else if (strcmp(input, "show") == 0)
+    {
         showCursor();
-    } else if (compare_string(input, "regs") == 0) {
+    }
+    else if (strcmp(input, "regs") == 0)
+    {
         print_registers();
-    } else if (compare_string(input, "keycodes") == 0) {
+    }
+    else if (strcmp(input, "keycodes") == 0)
+    {
         keycoder();
-     } else if (compare_string(input, "exit") == 0) {
+    }
+    else if (strcmp(input, "exit") == 0)
+    {
         g_bKernelShouldStop = true;
-    } else if (compare_string(input, "stage2") == 0) {
+    }
+    else if (strcmp(input, "stage2") == 0)
+    {
         printf("Loading Kernel to 0x100000.\n");
         readFromHardDrive(53, 2779, 0x100000);
-    } else if (strstr(input, "dump") == input) {
+
+        void* sector = malloc(512);
+        memset(sector, 0xCD, 512);
+        writeToHardDrive(2779, 1, sector);      // #ERROR_TAG
+
+        readFromHardDrive(2779, 1, 0x100000);
+
+        free(sector);    
+    }
+    else if (strstr(input, "dump") == input)
+    {
         char* addressStr = strtok(input + 5, " ");
         char* lengthStr = strtok(NULL, " ");
 
@@ -418,7 +460,9 @@ void execute_command(char *input) {
         } else {
             print_string("Invalid parameters for 'dump address length' command.\n");
         }
-    } else if (strstr(input, "memset") == input) {
+    }
+    else if (strstr(input, "memset") == input)
+    {
         char* addressStr = strtok(input + 7, " ");
         char* lengthStr = strtok(NULL, " ");
 
@@ -429,7 +473,9 @@ void execute_command(char *input) {
         } else {
             print_string("Invalid parameters for 'memset dest value' command.\n");
         }
-    } else if (strstr(input, "memcpy") == input) {
+    }
+    else if (strstr(input, "memcpy") == input)
+    {
         char* addressStr = strtok(input + 7, " ");
         char* addressStr2 = strtok(NULL, " ");
         char* lengthStr = strtok(NULL, " ");
@@ -442,7 +488,9 @@ void execute_command(char *input) {
         } else {
             print_string("Invalid parameters for 'memcpy source dest length' command.\n");
         }
-    } else if (strstr(input, "run") == input) {
+    }
+    else if (strstr(input, "run") == input)
+    {
         char* addressStr = strtok(input + 4, " ");
 
         if (addressStr != NULL) {
@@ -454,50 +502,26 @@ void execute_command(char *input) {
         } else {
             print_string("Invalid parameters for 'run address' command.\n");
         }
-    } else if (strstr(input, "ascii") == input) {
-        print_ascii_table();
-     } else if (strstr(input, "send") == input) {
-        char* param1 = strtok(input + strlen("send") + 1, " ");
-
-        if (param1 != NULL) {
-            // Find the corresponding file entry
-            int i;
-            for (i = 0; i < 2; i++) {
-                print_string(filetable[i].filename);
-                print_string("tst");
-                print_nl();
-                name1();
-                if (strstr(param1, "name1") == param1) {
-                    // Execute the function pointer if it is not NULL
-                    if (filetable[i].filepointer != NULL) {
-                        //FilePointer funcPtr = filetable[i].filepointer;
-                        //funcPtr();
-                        name1();
-                    } else {
-                        print_string("Function pointer is not assigned for file: ");
-                        print_string(param1);
-                        print_nl();
-                    }
-                    break;
-                }
-            }
-            if (i == 2) {
-                print_string("File not found: ");
-                print_string(param1);
-                print_nl();
-            }
-        } else {
-            print_string("Invalid parameters for 'send' command.\n");
-        }
     }
-    else if (strstr(input, "searchb") == input) {
+    else if (strstr(input, "ascii") == input)
+    {
+        print_ascii_table();
+    }
+    else if (strstr(input, "searchb") == input)
+    {
         execute_search_command_chr(input);
-    } else if (strstr(input, "searchs") == input) {
+    }
+    else if (strstr(input, "searchs") == input)
+    {
         execute_search_command_str(input);
-    } else if (compare_string(input, "clr") == 0 || compare_string(input, "rst") == 0) {
+    }
+    else if (strcmp(input, "clr") == 0 || strcmp(input, "rst") == 0)
+    {
         clear_screen();
         set_cursor(0);
-    } else {
+    }
+    else
+    {
         print_string("Unknown command: ");
         print_string(input);
         print_nl();
@@ -509,7 +533,6 @@ none:
     return;
 }
 
-
 // Console program one
 int kernel_console_program() {
     while (1) {
@@ -519,6 +542,8 @@ int kernel_console_program() {
             uint8_t scancode = read_keyboard_data();
 
             if (scancode > SC_MAX) return 1;
+
+            HandleKeypress(sc_ascii2[(int)scancode]);
 
             if (scancode == BACKSPACE) {
                 if (backspace(key_buffer2)) {
