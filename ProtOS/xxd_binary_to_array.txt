@@ -1,0 +1,2 @@
+xxd -g 1 -c 16 -s 0 -l 128 -u -ps -i kernel2.bin
+

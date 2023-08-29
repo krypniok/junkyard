@@ -1,0 +1,193 @@
+
+// Function to wait until the disk is ready
+void waitForDiskReady() {
+    unsigned short status;
+    do {
+        // Read the status register from the disk controller
+        __asm__ volatile("inw %%dx, %%ax" : "=a"(status) : "d"(0x1F7));
+    } while ((status & 0x0800) != 0x0800);  // Check the status bit 7 (bit 11 in the word) for the ready status
+}
+
+// Function to set the current sector
+void setCurrentSector(unsigned int sectorNumber) {
+    // Issue the command to set the current sector
+    __asm__ volatile(
+        "outb %%al, %%dx"   // Write the command (0x30) to the command register of the disk controller
+        :
+        : "a"(0x30), "d"(0x1F2)
+    );
+
+    // Write the sector number to the disk controller
+    __asm__ volatile(
+        "outb %%al, %%dx"   // Write the low byte of the sector number
+        :
+        : "a"(sectorNumber), "d"(0x1F3)
+    );
+
+    // Write the sector number high byte (bits 24-31) to the disk controller
+    __asm__ volatile(
+        "outb %%al, %%dx"   // Write the high byte of the sector number
+        :
+        : "a"((sectorNumber >> 8) & 0xFF), "d"(0x1F4)
+    );
+
+    // Write the sector number high byte (bits 32-39) to the disk controller
+    __asm__ volatile(
+        "outb %%al, %%dx"   // Write the highest byte of the sector number
+        :
+        : "a"((sectorNumber >> 16) & 0xFF), "d"(0x1F5)
+    );
+
+    // Write the drive select and LBA mode bits to the disk controller
+    __asm__ volatile(
+        "outb %%al, %%dx"   // Write the drive select and LBA mode bits
+        :
+        : "a"((sectorNumber >> 24) & 0x0F), "d"(0x1F6)
+    );
+
+    // Wait until the disk is ready
+    waitForDiskReady();
+}
+
+// Function to read the current sector
+void readCurrentSector(void* buffer) {
+    unsigned short* wordBuffer = (unsigned short*)buffer;
+
+    // Issue the read command
+    __asm__ volatile(
+        "movw $0x0201, %%ax\n\t"   // Set up the read command (0x02) and sector count (0x01)
+        "outw %%ax, %%dx"         // Write the command to the command register of the disk controller
+        :
+        : "d"(0x1F7)
+        : "ax"
+    );
+
+    // Wait until the disk is ready
+    waitForDiskReady();
+
+    // Read a sector of data from the disk
+    for (unsigned int i = 0; i < 256; ++i) {
+        __asm__ volatile(
+            "inw %%dx, %%ax"         // Read two bytes from the data register of the disk controller
+            : "=a"(wordBuffer[i])
+            : "d"(0x1F0)
+        );
+    }
+}
+
+// Function to read from the hard drive using ports
+void readFromHardDrive(unsigned int sectorNumber, unsigned int sectorCount, void* buffer) {
+    // Temporary variables
+    unsigned short* wordBuffer = (unsigned short*)buffer;
+    unsigned short status;
+
+    setCurrentSector(sectorNumber);
+
+    // Loop through each sector to read
+    for (unsigned int sector = 0; sector < sectorCount; ++sector) {
+        // Wait until the disk is ready
+      
+        do {
+            // Read the status register from the disk controller
+            __asm__ volatile("inw %%dx, %%ax" : "=a"(status) : "d"(0x1F7));
+
+        } while ((status & 0x0800) != 0x0800);  // Check the status bit 3 (bit 8 in the word) for the ready status
+
+        // Issue the read command
+        __asm__ volatile(
+            "outw %%ax, %%dx"  // Write the command (0x20) to the command register of the disk controller
+            :
+            : "a"(0x20), "d"(0x1F7)
+        );
+
+        // Wait until the disk is ready
+        do {
+            __asm__ volatile("inw %%dx, %%ax" : "=a"(status) : "d"(0x1F7));
+
+        } while ((status & 0x0800) != 0x0800);  // Check the status bit 3 (bit 8 in the word) for the ready status
+
+        // Read a sector of data from the disk
+        for (unsigned int i = 0; i < 256; ++i) {
+            __asm__ volatile(
+                "inw %%dx, %%ax"         // Read two bytes from the data register of the disk controller
+                : "=a"(wordBuffer[i])
+                : "d"(0x1F0)
+            );
+        }
+
+        // Move to the next sector
+        wordBuffer += 256;
+    }
+}
+
+
+// Function to write the current sector
+void writeCurrentSector(const void* buffer) {
+    const unsigned short* wordBuffer = (const unsigned short*)buffer;
+
+    // Issue the write command
+    __asm__ volatile(
+        "movw $0x0301, %%ax\n\t"   // Set up the write command (0x03) and sector count (0x01)
+        "outw %%ax, %%dx"         // Write the command to the command register of the disk controller
+        :
+        : "d"(0x1F7)
+        : "ax"
+    );
+
+    // Wait until the disk is ready
+    waitForDiskReady();
+
+    // Write a sector of data to the disk
+    for (unsigned int i = 0; i < 256; ++i) {
+        __asm__ volatile(
+            "outw %%ax, %%dx"         // Write two bytes to the data register of the disk controller
+            :
+            : "a"(wordBuffer[i]), "d"(0x1F0)
+        );
+    }
+}
+
+// Function to write to the hard drive using ports
+void writeToHardDrive(unsigned int sectorNumber, unsigned int sectorCount, void* buffer) {
+    // Temporary variables
+    const unsigned short* wordBuffer = (const unsigned short*)buffer;
+    unsigned short status;
+
+    setCurrentSector(sectorNumber);
+
+    // Loop through each sector to write
+    for (unsigned int sector = 0; sector < sectorCount; ++sector) {
+
+        // Wait until the disk is ready
+        do {
+            // Read the status register from the disk controller
+            __asm__ volatile("inw %%dx, %%ax" : "=a"(status) : "d"(0x1F7));
+        } while ((status & 0x0800) != 0x0800);  // Check the status bit 7 (bit 11 in the word) for the ready status
+
+        // Issue the write command
+        __asm__ volatile(
+            "outw %%ax, %%dx"  // Write the command (0x30) to the command register of the disk controller
+            :
+            : "a"(0x30), "d"(0x1F7)
+        );
+
+        // Wait until the disk is ready
+        do {
+            __asm__ volatile("inw %%dx, %%ax" : "=a"(status) : "d"(0x1F7));
+        } while ((status & 0x0800) != 0x0800);  // Check the status bit 7 (bit 11 in the word) for the ready status
+
+
+        // Write a sector of data to the disk
+        for (unsigned int i = 0; i < 256; ++i) {
+            // DEBUG_POINT1
+            __asm__ volatile(
+                "outw %%ax, %%dx"         // Write two bytes to the data register of the disk controller
+                :
+                : "a"(wordBuffer[i]), "d"(0x1F0)
+            );
+        }
+        // DEBUG_POINT2
+        // Move to the next sector
+        wordBuffer += 256;
+    }
+}
