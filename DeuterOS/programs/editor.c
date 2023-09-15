@@ -100,20 +100,14 @@ void draw_text_buffer() {
     printf("%s", text_buffer);
 }
 
-int keycoder() {
-
+int keycodes() {
     while (1) {
-
         while (!(read_keyboard_status() & 0x01)) {}
         uint8_t scancode = read_keyboard_data();
-
         printf("%s\n", sc_name3[scancode]);
-        printf("test\n");
-
-        // Überprüfe den Tastaturstatus
         if (scancode < 128) {
             if (scancode == SC_ESC) {
-               // editor_exit();
+
                 return 0;
             }
         }

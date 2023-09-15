@@ -30,10 +30,15 @@ load_kernel:
     call print16
     call print16_nl
 
-    mov bx, 0x1000 ; Read from disk and store in 0x1000
-    mov dh, 53
+    ; Read from disk and store in 0x10000
+    mov ax, 0x1000
+    mov es, ax
+    mov bx, 0x0
+
+    mov dh, 127 ;how much is the fish ?
     mov dl, [BOOT_DRIVE]
     call disk_load
+
 
     ret
 
@@ -58,7 +63,7 @@ BEGIN_32BIT:
 
     mov ebx, MSG_32BIT_MODE
     call print32
-    call 0x1000 ; Give control to the kernel
+    call 0x10000 ; Give control to the kernel
     jmp $ ; Stay here when the kernel returns control to us (if ever)
 
 

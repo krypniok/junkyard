@@ -25,7 +25,7 @@ CFLAGS := -DREVISION_NUMBER=$(NEW_REVISION) -DREVISION_DATE='"$(CURRENT_DATE)"'
 
 # Notice how dependencies are built as needed
 kernel.bin: boot/kernel_entry.o ${OBJ_FILES}
-	ld -nostdlib -m elf_i386 -o $@ -Ttext 0x1000 $^ --oformat binary
+	ld -nostdlib -m elf_i386 -o $@ -Ttext 0x10000 $^ --oformat binary
 
 os-image.bin: boot/mbr.bin kernel.bin
 	cat $^ > $@
@@ -33,14 +33,14 @@ os-image.bin: boot/mbr.bin kernel.bin
 run: os-image.bin
 	dd if=/dev/zero of=disk_image.img bs=512 count=2880
 	dd if=os-image.bin of=disk_image.img conv=notrunc
-	qemu-system-i386 -rtc "base=2023-08-03T12:34:56" -drive format=raw,file=disk_image.img
+	qemu-system-i386 -rtc "base=2023-08-03T12:34:56" -soundhw pcspk -device sb16 -drive format=raw,file=disk_image.img
 
 echo: os-image.bin
 	xxd $<
 
 # only for debug
 kernel.elf: boot/kernel_entry.o ${OBJ_FILES}
-	ld -nostdlib -m elf_i386 -o $@ -Ttext 0x1000 $^
+	ld -nostdlib -m elf_i386 -o $@ -Ttext 0x10000 $^
 
 debug: os-image.bin kernel.elf
 	qemu-system-i386 -s -S -fda disk_image.img -d guest_errors,int &

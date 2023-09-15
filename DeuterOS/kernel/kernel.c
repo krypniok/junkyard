@@ -384,83 +384,149 @@ int memtest() {
     return 0;
 }
 
+// Makro zur Konvertierung der Frequenz in Hertz in die erforderlichen LSB und MSB Werte
+#define FREQUENCY_TO_LSB_MSB(frequency) \
+    ((uint16_t)(1193180 / (frequency)))
+
+
+void beep(int hertz, int laenge) {
+    // Aktiviere den PC Speaker (Bit 0 und 1 setzen)
+    uint8_t prev = port_byte_in(0x61); // Vorheriger Zustand speichern
+    port_byte_out(0x61, prev | 0x03); // Bit 0 und 1 setzen
+
+    // Konvertiere die Frequenz in LSB und MSB
+    uint16_t lsb_msb = FREQUENCY_TO_LSB_MSB(hertz);
+
+    // Generiere den Piepton
+    port_byte_out(0x43, 0xB6); // Set Control Word
+    port_byte_out(0x42, (uint8_t)(lsb_msb & 0xFF)); // LSB der Frequenz
+    port_byte_out(0x42, (uint8_t)(lsb_msb >> 8));   // MSB der Frequenz
+
+    // Warte eine Weile (z.B., 2 Sekunden)
+    delay_ms(laenge);
+
+    // Deaktiviere den PC Speaker (Bits 0 und 1 löschen)
+    port_byte_out(0x61, prev);
+
+    return 0;
+}
+
+// Play sound using built in speaker
+ static void play_sound(uint32_t nFrequence) {
+ 	uint32_t Div;
+ 	uint8_t tmp;
+ 
+    // Set the PIT to the desired frequency
+ 	Div = 1193180 / nFrequence;
+ 	port_byte_out(0x43, 0xb6);
+ 	port_byte_out(0x42, (uint8_t) (Div) );
+ 	port_byte_out(0x42, (uint8_t) (Div >> 8));
+ 
+    // And play the sound using the PC speaker
+ 	tmp = port_byte_in(0x61);
+  	if (tmp != (tmp | 3)) {
+ 		port_byte_out(0x61, tmp | 3);
+ 	}
+ }
+ 
+ //make it shutup
+ static void nosound() {
+ 	uint8_t tmp = port_byte_in(0x61) & 0xFC;
+  	port_byte_out(0x61, tmp);
+ }
+ 
+// Make a beep
+void beep2() {
+    play_sound(1000);
+	sleep(1000);
+ 	nosound();
+}
+
+
+// Makro, um eine Funktion nach Namen aufzurufen (ohne Parameter)
+#define CALL_FUNCTION(funcName) \
+    else if (strcmp(input, #funcName) == 0) { \
+        funcName(); \
+    }
+
+// Makro, um eine Funktion nach Namen aufzurufen (mit einem Parameter)
+#define CALL_FUNCTION_WITH_ARG(funcName, arg) \
+    else if (strcmp(input, #funcName) == 0) { \
+        funcName(arg); \
+    }
+
+// Makro, um eine Funktion nach Namen aufzurufen (mit zwei Parametern)
+#define CALL_FUNCTION_WITH_2ARGS(funcName) \
+    else if (strstr(input, #funcName) == input) { \ 
+        char* addressStr = strtok(input + strlen(#funcName) + 1, " "); \
+        char* lengthStr = strtok(NULL, " "); \
+        if (addressStr != NULL && lengthStr != NULL) { \
+            uint32_t frequence = (uint32_t)strtoul(addressStr, NULL, 0); \
+            uint32_t duration = (uint32_t)strtoul(lengthStr, NULL, 0); \
+            beep(frequence, duration); \ 
+        } else { print_string("Invalid parameters for 'memset dest value' command.\n"); } \
+    }
+
+void random() {
+    //init_random();
+    for (int i = 0; i < 10; i++) {
+        printf("%d\n", rand_range(1, 100)); // Beispiel: Zahlen zwischen 1 und 100
+    }
+}  
+
+void uptime() {
+    formatTimestampHHMMSS(GetTicks());
+}
+
+void exit() {
+    g_bKernelShouldStop = true;
+}
+
+void hddtest() {
+    printf("Harddrive Test...\n");
+    readFromHardDrive(53, 2779, 0x100000);
+    void* sector = malloc(512);
+    memset(sector, 0xCD, 512);
+    writeToHardDrive(2779, 1, sector);      // #ERROR_TAG
+    write_to_disk(512, (uint8_t*) sector, 512);
+    readFromHardDrive(1, 1, 0x100000);
+    free(sector);    
+}
+
+void dump(char* input) {
+    char* addressStr = strtok(input + 5, " ");
+    char* lengthStr = strtok(NULL, " ");
+
+    if (addressStr != NULL && lengthStr != NULL) {
+        uint32_t address = strtoul(addressStr, NULL, 0);
+        uint16_t length = strtoul(lengthStr, NULL, 0);
+        // clear_screen();
+        hexDump((void*)address, (int)length);
+    } else {
+        print_string("Invalid parameters for 'dump address length' command.\n");
+    }
+}
+
 void execute_command(char *input) {
     int cursor = get_cursor();
-    if (strcmp(input, "") == 0)
-    {
-        goto none;
-    }
-    else if (strcmp(input, "memtest") == 0)
-    {
-        memtest();
-    }
-    else if (strcmp(input, "random") == 0)
-    {
-        init_random();
-        for (int i = 0; i < 10; i++) {
-            printf("%d\n", rand_range(1, 100)); // Beispiel: Zahlen zwischen 1 und 100
-        }
-    }  
-    else if (strcmp(input, "edit") == 0)
-    {
-        editor_main();
-    }
-    else if (strcmp(input, "snake") == 0)
-    {
-        snake_main();
-    }
-    else if (strcmp(input, "uptime") == 0)
-    {
-        formatTimestampHHMMSS(GetTicks());
-    }
-    else if (strcmp(input, "hide") == 0)
-    {
-        hideCursor();
-    }
-    else if (strcmp(input, "show") == 0)
-    {
-        showCursor();
-    }
-    else if (strcmp(input, "regs") == 0)
-    {
-        print_registers();
-    }
-    else if (strcmp(input, "keycodes") == 0)
-    {
-        keycoder();
-    }
-    else if (strcmp(input, "exit") == 0)
-    {
-        g_bKernelShouldStop = true;
-    }
-    else if (strcmp(input, "stage2") == 0)
-    {
-        printf("Loading Kernel to 0x100000.\n");
-        readFromHardDrive(53, 2779, 0x100000);
+    if (strcmp(input, "") == 0) { goto none; }
 
-        void* sector = malloc(512);
-        memset(sector, 0xCD, 512);
-        writeToHardDrive(2779, 1, sector);      // #ERROR_TAG
+    CALL_FUNCTION(memtest)
+    CALL_FUNCTION_WITH_2ARGS(beep)
+    CALL_FUNCTION_WITH_2ARGS(beep2)
+    CALL_FUNCTION(editor_main)
+    CALL_FUNCTION(snake_main)
+    CALL_FUNCTION(random)
+    CALL_FUNCTION(uptime)
+    CALL_FUNCTION(hideCursor)
+    CALL_FUNCTION(showCursor)
+    CALL_FUNCTION(print_registers)
+    CALL_FUNCTION(keycodes)
+    CALL_FUNCTION(exit)
+    CALL_FUNCTION(hddtest)
+    CALL_FUNCTION(bgamain)
 
-        readFromHardDrive(2779, 1, 0x100000);
-
-        free(sector);    
-    }
-    else if (strstr(input, "dump") == input)
-    {
-        char* addressStr = strtok(input + 5, " ");
-        char* lengthStr = strtok(NULL, " ");
-
-        if (addressStr != NULL && lengthStr != NULL) {
-            uint32_t address = strtoul(addressStr, NULL, 0);
-            uint16_t length = strtoul(lengthStr, NULL, 0);
-
-            // clear_screen();
-            hexDump((void*)address, (int)length);
-        } else {
-            print_string("Invalid parameters for 'dump address length' command.\n");
-        }
-    }
+//    CALL_FUNCTION_WITH_2ARGS(dump, uint32_t, uint32_t)
     else if (strstr(input, "memset") == input)
     {
         char* addressStr = strtok(input + 7, " ");

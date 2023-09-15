@@ -11,3 +11,5 @@ void readFromHardDrive(unsigned int sectorNumber, unsigned int sectorCount, void
 // Function to write the current sector
 void writeCurrentSector(void* buffer);
 void writeToHardDrive(unsigned int sectorNumber, unsigned int sectorCount, void* buffer);
+
+void write_to_disk(uint32_t lba, uint8_t* buffer, uint32_t size_in_bytes);
