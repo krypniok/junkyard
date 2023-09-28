@@ -15,6 +15,7 @@ call enable_a20_line ; Enable A20 line
 call load_kernel ; Read the kernel from disk
 
 
+
 call switch_to_32bit ; Disable interrupts, load GDT, etc. Finally jumps to 'BEGIN_PM'
 jmp $ ; Never executed
 

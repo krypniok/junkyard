@@ -4,6 +4,18 @@
 #include "../kernel/util.h"
 #include "isr.h"
 
+
+#define MAX_SUB_TIMERS 256
+
+typedef struct {
+    uint32_t remaining_time;
+    uint32_t duration;
+    void (*callback)(void);
+} SubTimer;
+
+SubTimer sub_timers[MAX_SUB_TIMERS];
+uint8_t num_sub_timers = 0;
+
 uint32_t tick = 0;
 
 static void timer_callback(registers_t *regs) {
@@ -13,7 +25,9 @@ static void timer_callback(registers_t *regs) {
 
 void sleep(int ms) {
     uint32_t ts = tick;
+    setCursorVisible(0);
     while ((tick - ts) < ms) { }
+    setCursorVisible(1);
 }
 
 unsigned int GetTicks() {
@@ -24,10 +38,26 @@ void sub_timer_callback() {
     static int ff=0;
     ff = (ff == 0) ? 1 : 0;
  //   printChar(79, 24, 0x0F, (ff == 0) ? 0x01 : 0x02);
-    int cursor = get_cursor();
-    set_cursor(144);
-  //  formatTimestampHHMMSS(tick);
-    set_cursor(cursor);
+ //   int cursor = get_cursor();
+ //   set_cursor(144);
+ //   formatTimestampHHMMSS(tick);
+ //   set_cursor(cursor);
+
+}
+
+void sub_timer_cursor_callback() {
+    static int ff=0;
+    if( isCursorVisible() == 0 ) return;
+    ff = (ff == 0) ? 1 : 0;
+    if(ff) { 
+        int cursor = get_cursor();
+        printf("%c", get_cursor_char());
+        set_cursor(cursor);
+    } else {
+        int cursor = get_cursor();
+        printf("%c", 0x20);
+        set_cursor(cursor);
+    }
 }
 
 // init_custom_timer
@@ -44,30 +74,37 @@ void init_timer(uint32_t freq) {
     port_byte_out(0x40, low);
     port_byte_out(0x40, high);
 
-    add_sub_timer(100, sub_timer_callback);
-}
-
-#define MAX_SUB_TIMERS 10
-
-typedef struct {
-    uint32_t remaining_time;
-    uint32_t duration;
-    void (*callback)(void);
-} SubTimer;
-
-SubTimer sub_timers[MAX_SUB_TIMERS];
-uint8_t num_sub_timers = 0;
-
-void add_sub_timer(uint32_t duration, void (*callback)(void)) {
-    if (num_sub_timers >= MAX_SUB_TIMERS) {
-        // Max number of sub-timers reached, handle accordingly
-        return;
+    for(int i=0; i<MAX_SUB_TIMERS; i++) {
+        sub_timers[i].callback == NULL;
     }
 
-    sub_timers[num_sub_timers].remaining_time = duration;
-    sub_timers[num_sub_timers].duration = duration;
-    sub_timers[num_sub_timers].callback = callback;
-    num_sub_timers++;
+    add_sub_timer(1, sub_timer_callback);
+    hidecursor();
+    add_sub_timer(500, sub_timer_cursor_callback);
+}
+
+int add_sub_timer(uint32_t duration, void (*callback)(void)) {
+    if (num_sub_timers >= MAX_SUB_TIMERS) {
+        // Max number of sub-timers reached, handle accordingly
+        return -1;
+    }
+
+    for(int i=0; i<MAX_SUB_TIMERS; i++) {
+        if(sub_timers[i].callback == NULL) {
+            num_sub_timers++;
+            sub_timers[i].remaining_time = duration;
+            sub_timers[i].duration = duration;
+            sub_timers[i].callback = callback;
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+void remove_sub_timer(int id) {
+    sub_timers[id].callback = NULL;
+    num_sub_timers--;
 }
 
 void update_sub_timers(uint32_t elapsed_time) {

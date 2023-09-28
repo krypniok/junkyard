@@ -1,7 +1,7 @@
 #include "../drivers/display.h"
 #include "../drivers/keyboard.h"
 #include "../drivers/ports.h"
-#include "../drivers/graphics.h"
+// include "../drivers/graphics.h"
 #include "../drivers/video.h"
 
 #include "../stdlibs/string.h"
@@ -11,6 +11,10 @@
 #include "editor.h"
 
 #define MAX_BUFFER_SIZE 1024
+
+unsigned char text_buffer[MAX_BUFFER_SIZE];
+int text_buffer_index = 0;
+
 
 const char* sc_name3[] = {"VROOM", "Esc", "1", "2", "3", "4", "5", "6",
                          "7", "8", "9", "0", "-", "=", "Backspace", "Tab", "Q", "W", "E",
@@ -62,16 +66,13 @@ void draw_status_bar() {
     set_color(FG_BLACK | BG_CYAN);
     for(unsigned char c=0; c<80; c++) {
         printf(" ");
-    }    
+    }
 }
 
 void editor_exit() {
     set_color(FG_WHITE | BG_BLACK);
     clear_screen();
 }
-
-unsigned char text_buffer[MAX_BUFFER_SIZE];
-int text_buffer_index = 0;
 
 void insert_character(unsigned char c) {
     if (text_buffer_index < MAX_BUFFER_SIZE - 1) {
@@ -139,7 +140,7 @@ int editor_main2() {
             } else {
                 unsigned char letter;
                 if (is_key_pressed(SC_LEFT_SHIFT)) {
-                    if(scancode == SC_LEFT_SHIFT) continue;;
+                    if(scancode == SC_LEFT_SHIFT) continue;
                     letter = sc_ascii5[(int)scancode];
                     insert_character(letter);
                 } else {
@@ -153,13 +154,64 @@ int editor_main2() {
     sleep(100);
 }
 
+
+
+int hexviewer(uint32_t address) {
+    int sector = 0;
+    char run = 1;
+    unsigned char cx=0;
+    unsigned char cy=0;
+    unsigned char px=0;
+    unsigned char py=0;
+    void* cursor_address = address;
+    int cursor;
+    while(run) {
+        unsigned char key = getkey();
+        if (key == 0 || key == 0xE0) continue; 
+        switch(key) {
+            case SC_PAGEUP : sector--; break; 
+            case SC_PAGEDOWN : sector++; break;
+            case 72 : if(cy > 0) cy--; break; 
+            case 80 : if(cy < 22) cy++; break;
+            case 75 : if(cx > 0) cx--; break; 
+            case 77 : if(cx < 15) cx++; break;
+            case 1: run = 0; break;
+            default: {
+                if(key < 97) {
+                unsigned char letter = sc_ascii4[(int)key];
+                key = letter;
+                break;
+                }
+            }
+        }
+
+        clear_screen();
+        draw_status_bar();
+        cursor = get_cursor();
+        set_cursor(0);
+        cursor_address = (address+(368*sector))+(cy*16)+cx;
+        printf("Cursor: %X, ", cursor_address);
+        printf("Char: %c\n", key);
+        set_cursor(cursor);
+
+        hexdump((address+(368*sector)), 368);
+
+        draw_status_bar();
+        px = 10+(cx*3);
+        py = 1+cy;
+        set_cursor_xy(px, py);
+    }
+    set_color(FG_WHITE | BG_BLACK);
+    clear_screen();
+}
+
 int editor_main() {
     int cursor_pos = 0;
 
     while (1) {
         clear_screen();
         draw_status_bar();
-        hexDump((void*)0x0, (int)256);
+        hexdump((void*)0x0, (int)256);
 
         // Zeige den Cursor als "X" am aktuellen Position an
         set_cursor(cursor_pos * 2 + 1);
@@ -171,7 +223,7 @@ int editor_main() {
         int ch = scancode;
         if (ch == 0 || ch == 0xE0) {
             // Erweiterte Tastaturtaste, z.B. Pfeiltasten
-            ch = getch();
+            ch = getkey();
             switch (ch) {
                 case 72:  // Pfeiltaste nach oben (Keypad 8)
                     cursor_pos = (cursor_pos - 16) >= 0 ? cursor_pos - 16 : cursor_pos;

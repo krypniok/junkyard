@@ -8,8 +8,47 @@
 #include "../kernel/util.h"
 
 unsigned char g_ConsoleColor = WHITE_ON_BLACK;
+unsigned char g_ConsoleX=0, g_ConsoleY=0;
+unsigned char g_CursorShow = 1;
+unsigned char g_CursorChar = '_';
+
+int setpal() {
+    // Initialisierung des VGA-Textmodus (In Assembler durchgeführt)
+
+    // Farbpalette ändern
+    // Farbendaten für Schwarz (Farbe 0)
+    port_byte_out(0x03C8, 0); // Indexregister setzen
+    port_byte_out(0x03C9, 0); // Rotwert
+    port_byte_out(0x03C9, 0); // Grünwert
+    port_byte_out(0x03C9, 0); // Blauwert
+
+    // Farbendaten für Weiß (Farbe 15)
+    port_byte_out(0x03C8, 15); // Indexregister setzen
+    port_byte_out(0x03C9, 255); // Rotwert
+    port_byte_out(0x03C9, 255); // Grünwert
+    port_byte_out(0x03C9, 255); // Blauwert
+
+    // Graduelle Blauabstufungen (Farben 1-14)
+    for (int i = 1; i <= 14; i++) {
+        port_byte_out(0x03C8, i); // Indexregister setzen
+        port_byte_out(0x03C9, 0); // Rotwert
+        port_byte_out(0x03C9, 0); // Grünwert
+        port_byte_out(0x03C9, i * 16); // Blauwert (graduell anpassen)
+    }
+
+    // Deine Farben sind jetzt gesetzt!
+
+    return 0;
+}
 
 void set_color(unsigned char c) { g_ConsoleColor = c; }
+unsigned char get_color(c) { return g_ConsoleColor; }
+
+void set_cursor_char(unsigned char c) { g_CursorChar = c; }
+unsigned char get_cursor_char() { return g_CursorChar; }
+
+unsigned char isCursorVisible() { return g_CursorShow; }
+void setCursorVisible(unsigned char visible) { g_CursorShow = visible; }
 
 void set_cursor(int offset) {
     offset /= 2;
@@ -82,6 +121,12 @@ void print_string(char *string) {
     set_cursor(offset);
 }
 
+void print_string_vertical(unsigned char x, unsigned char y, unsigned char* str) {
+    for(int i=0; i<strlen(str); i++) {
+        printChar(x, y+i, 0x0F, str[i]);
+    }
+}
+
 void print_nl() {
     int newOffset = move_offset_to_new_line(get_cursor());
     if (newOffset >= MAX_ROWS * MAX_COLS * 2) {
@@ -101,6 +146,7 @@ void clear_screen() {
 void print_backspace() {
     int newCursor = get_cursor() - 2;
     set_char_at_video_memory(' ', newCursor);
+    set_char_at_video_memory(' ', newCursor+2);
     set_cursor(newCursor);
 }
 
@@ -401,13 +447,13 @@ int sprintf( char *buffer, const char *format, ...)
 void printf(const char *format, ...)
 {
     va_list args;
+    g_CursorShow = 0;
     va_start(args, format);
-
 	unsigned char buffer[80];
 	sprintf(buffer, format, args);
 	print_string(buffer);
-
     va_end(args);
+    g_CursorShow = 1;
     return;
 }
 
@@ -425,7 +471,7 @@ void printPointer2(void *ptr)
     print_string(buffer);
 }
 
-void hexDump(void *ptr, size_t size)
+void hexdump(void *ptr, size_t size)
 {
     unsigned char *data = (unsigned char *)ptr;
     const int bytesPerLine = 16;

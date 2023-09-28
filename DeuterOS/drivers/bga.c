@@ -19,6 +19,52 @@
 
 #define outw port_word_out
 #define inw port_word_in
+#define outb port_byte_in
+#define inb port_byte_in
+
+// VGA register constants
+#define VGA_MISC_OUT_REG 0x3C2
+#define VGA_SEQ_INDEX_REG 0x3C4
+#define VGA_SEQ_DATA_REG 0x3C5
+#define VGA_GC_INDEX_REG 0x3CE
+#define VGA_GC_DATA_REG 0x3CF
+#define VGA_CRTC_INDEX_REG 0x3D4
+#define VGA_CRTC_DATA_REG 0x3D5
+
+
+
+// Function to initialize VGA
+void vgafont() {
+    // Clear even/odd mode
+    outb(VGA_SEQ_INDEX_REG, 0x05);
+    outb(VGA_SEQ_DATA_REG, 0x05);
+
+    // Map VGA memory to 0xA0000
+    outb(VGA_GC_INDEX_REG, 0x06);
+    outb(VGA_GC_DATA_REG, 0x04);
+
+    // Set bitplane 2
+    outb(VGA_SEQ_INDEX_REG, 0x02);
+    outb(VGA_SEQ_DATA_REG, 0x04);
+
+    // Clear even/odd mode (the other way)
+    outb(VGA_SEQ_DATA_REG, 0x06);
+
+    // Copy charmap (assuming esi points to source address)
+    uint8_t* esi = (uint8_t*)0xA0000;
+    int charmapSize = 256;
+    memcpy(0x1000, esi, 4096);
+
+    // Restore VGA state to normal operation
+    outb(VGA_CRTC_INDEX_REG, 0x02);
+    outb(VGA_CRTC_DATA_REG, 0x03);
+    outb(VGA_CRTC_INDEX_REG, 0x04);
+    outb(VGA_CRTC_DATA_REG, 0x02);
+    outb(VGA_SEQ_INDEX_REG, 0x05);
+    outb(VGA_SEQ_DATA_REG, 0x10);
+    outb(VGA_SEQ_INDEX_REG, 0x06);
+    outb(VGA_SEQ_DATA_REG, 0x0E);
+}
 
 // Function to set BGA video mode
 void setBGAMode() {
@@ -57,7 +103,7 @@ void writeCharacter(uint32_t* framebuffer, int x, int y, char character) {
     framebuffer[offset] = (0xFF << 24) | (character << 16) | (character << 8) | character;
 }
 
-void bgamain() {
+void bgamain2() {
     // Initialize BGA mode and obtain the framebuffer address
     setBGAMode();
     
@@ -77,4 +123,50 @@ void bgamain() {
     
     // Enter an infinite loop (your kernel's main loop)
     while (1);
+}
+
+#include <stdint.h>
+
+
+// Bochs BGA register constants
+#define BGA_INDEX_PORT 0x01CE
+#define BGA_DATA_PORT 0x01CF
+
+// Bochs BGA VBE mode setting constants
+#define BGA_SET_MODE 0x4
+#define BGA_MODE_1024x768 0x118  // Adjust mode number as needed
+#define BGA_USE_LFB_BIT 0x4000   // Bit 14: Enable LFB
+
+// Bochs BGA framebuffer address
+#define BGA_FRAMEBUFFER_ADDRESS 0xE0000000
+
+// Function to initialize Bochs BGA in VBE mode with LFB enabled
+void initializeBochsBGA() {
+    printf("hin und weg\n");
+    // Set Bochs BGA mode with LFB enabled
+    uint16_t mode = BGA_MODE_1024x768 | BGA_USE_LFB_BIT;
+    
+    outw(BGA_INDEX_PORT, BGA_SET_MODE);
+    outw(BGA_DATA_PORT, mode);
+
+    // Additional configuration or error handling can be added here
+}
+
+// Function to write a pixel to the Bochs BGA framebuffer
+void writePixel(uint32_t x, uint32_t y, uint32_t color) {
+    // Calculate the framebuffer address for the pixel
+    uint32_t* framebuffer = (uint32_t*)BGA_FRAMEBUFFER_ADDRESS;
+    uint32_t offset = y * 1024 + x;  // Assuming 1024x768 resolution
+    framebuffer[offset] = color;
+}
+
+// Entry point for your kernel
+void bgamain() {
+    // Call the Bochs BGA initialization function
+    initializeBochsBGA();
+
+    // Example: Write a red pixel at coordinates (100, 100)
+    writePixel(100, 100, 0xFF0000);
+
+    // Your kernel code goes here
 }

@@ -95,7 +95,7 @@ bool is_key_pressed(unsigned char scancode) {
     return false;
 }
 
-unsigned char getch() {
+unsigned char getkey() {
     sleep(33);
     while ( !(read_keyboard_status() & 0x01)) { }
     uint8_t scancode = read_keyboard_data();

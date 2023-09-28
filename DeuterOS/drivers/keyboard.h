@@ -94,8 +94,15 @@
 #define SC_LEFT_ARROW     89
 #define SC_RIGHT_ARROW    90
 
+#define SC_PAGEUP       0x49
+#define SC_PAGEDOWN     0x51
+#define SC_HOME         0x47
+#define SC_END          0x4F
+#define SC_INSERT       0x52
+#define SC_DELETE       0x53
+
 
 void init_keyboard();
 bool is_key_pressed(unsigned char scancode);
 
-unsigned char getch();
+unsigned char getkey();
