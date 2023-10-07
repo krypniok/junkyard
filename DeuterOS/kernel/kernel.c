@@ -80,11 +80,14 @@ const unsigned char sc_ascii3[] = {'?', '?', '!', '"',
 
 
 
+#include "../cpu/jmpbuf.h"
+jmp_buf kernel_env;
 
 void start_kernel() {
-
+    setjmp(&kernel_env);
     set_color(WHITE_ON_BLACK);
     clear_screen();
+    printf("start_kernel @ 0x%p\n", &start_kernel);
     unsigned char str[80];
     int revnum = REVISION_NUMBER;
     unsigned char* revdate = REVISION_DATE;
@@ -569,169 +572,11 @@ void killtimer() {
     remove_sub_timer(0);
 }
 
-typedef struct {
-    unsigned int eax;
-    unsigned int ebx;
-    unsigned int ecx;
-    unsigned int edx;
-    unsigned int esi;
-    unsigned int edi;
-    unsigned int ebp;
-    unsigned int esp;
-    unsigned int eflags;
-    unsigned int ds;
-    unsigned int cs;
-    unsigned int ss;
-    unsigned int eip;
-} jmp_buf;
 
-void print_registers_env(jmp_buf *env) {
-    printf("EAX: 0x%p\n", (void *)(uintptr_t)env->eax);
-    printf("EBX: 0x%p\n", (void *)(uintptr_t)env->ebx);
-    printf("ECX: 0x%p\n", (void *)(uintptr_t)env->ecx);
-    printf("EDX: 0x%p\n", (void *)(uintptr_t)env->edx);
-    printf("ESI: 0x%p\n", (void *)(uintptr_t)env->esi);
-    printf("EDI: 0x%p\n", (void *)(uintptr_t)env->edi);
-    printf("EBP: 0x%p\n", (void *)(uintptr_t)env->ebp);
-    printf("ESP: 0x%p\n", (void *)(uintptr_t)env->esp);
-    printf("EFLAGS: 0x%p\n", (void *)(uintptr_t)env->eflags);
-    printf("DS: 0x%p\n", (void *)(uintptr_t)env->ds);
-    printf("CS: 0x%p\n", (void *)(uintptr_t)env->cs);
-    printf("SS: 0x%p\n", (void *)(uintptr_t)env->ss);
-    printf("EIP: 0x%p\n", (void *)(uintptr_t)env->eip);
-}
-
-int setjmp(jmp_buf *env) {
-    unsigned int eax_val, ebx_val, ecx_val, edx_val, esi_val, edi_val, ebp_val, esp_val, eflags_val, ds_val, cs_val, ss_val;
-
-    __asm__ __volatile__ (
-        "mov %%eax, %[eax_val]\n"
-        "mov %%ebx, %[ebx_val]\n"
-        "mov %%ecx, %[ecx_val]\n"
-        "mov %%edx, %[edx_val]\n"
-        "mov %%esi, %[esi_val]\n"
-        "mov %%edi, %[edi_val]\n"
-        "mov %%ebp, %[ebp_val]\n"
-        "mov %%esp, %[esp_val]\n"
-        "mov %%cs, %[cs_val]\n"
-        "pushf\n"
-        "pop %[eflags_val]\n"
-        "mov %%ds, %[ds_val]\n"
-        "mov %%ss, %[ss_val]\n"
-        : [eax_val] "=g" (eax_val),
-          [ebx_val] "=g" (ebx_val),
-          [ecx_val] "=g" (ecx_val),
-          [edx_val] "=g" (edx_val),
-          [esi_val] "=g" (esi_val),
-          [edi_val] "=g" (edi_val),
-          [ebp_val] "=g" (ebp_val),
-          [esp_val] "=g" (esp_val),
-          [eflags_val] "=g" (eflags_val),
-          [ds_val] "=g" (ds_val),
-          [cs_val] "=g" (cs_val),
-          [ss_val] "=g" (ss_val)
-        :
-        : "memory"
-    );
-
-    // Speichern der Registerwerte in env
-    env->eax = eax_val;
-    env->ebx = ebx_val;
-    env->ecx = ecx_val;
-    env->edx = edx_val;
-    env->esi = esi_val;
-    env->edi = edi_val;
-    env->ebp = ebp_val;
-    env->esp = esp_val;
-    env->eflags = eflags_val;
-    env->ds = ds_val;
-    env->cs = cs_val;
-    env->ss = ss_val;
-
-    // Speichern des EIP (Instruction Pointer) separat
-    asm volatile (
-        "call 1f\n"
-        "1: popl %[eip_val]"
-        : [eip_val] "=m" (env->eip)
-    );
-
+int restart() {
+    longjmp(&kernel_env, 0);
     return 0;
 }
-
-void longjmp(jmp_buf *env, int val) {
-    // Setzen Sie den EIP (Instruction Pointer) auf den gewünschten Wert
-    env->eip = 0x10000;
-    void *target_addr = (void *)(uintptr_t)env->eip;
-    
-    // Wiederherstellen der Registerwerte aus env
-    __asm__ __volatile__ (
-        "mov %[eax_val], %%eax\n"
-        "mov %[ebx_val], %%ebx\n"
-        "mov %[ecx_val], %%ecx\n"
-        "mov %[edx_val], %%edx\n"
-        "mov %[esi_val], %%esi\n"
-        "mov %[edi_val], %%edi\n"
-        "mov %[ebp_val], %%ebp\n"
-        "mov %[esp_val], %%esp\n"
-        "mov %[cs_val], %%cs\n"
-        "mov %[ds_val], %%ds\n"
-        "mov %[ss_val], %%ss\n"
-        "push %[eflags_val]\n"
-        "popf\n"
-        "jmp *%[eip_val]\n"
-        :
-        : [eax_val] "g" (env->eax),
-          [ebx_val] "g" (env->ebx),
-          [ecx_val] "g" (env->ecx),
-          [edx_val] "g" (env->edx),
-          [esi_val] "g" (env->esi),
-          [edi_val] "g" (env->edi),
-          [ebp_val] "g" (env->ebp),
-          [esp_val] "g" (env->esp),
-          [eflags_val] "g" (env->eflags),
-          [ds_val] "g" (env->ds),
-          [cs_val] "g" (env->cs),
-          [ss_val] "g" (env->ss),
-          [eip_val] "g" (target_addr)
-        : "memory"
-    );
-}
-
-jmp_buf env;
-
-void foo() {
-    if (setjmp(&env) == 0) {
-        // Dieser Code wird nur beim ersten Aufruf von setjmp ausgeführt.
-        printf("Setting jump point\n");
-    print_registers_env(&env);
-    } else {
-        // Dieser Code wird nach einem longjmp-Aufruf ausgeführt.
-        printf("Jumped back\n");
-    }
-}
-
-
-void pip2() {
-    void* eip_val;
-    asm volatile(
-        "call 1f \n"
-        "1: pop %[eip_val] \n"
-        : [eip_val] "=g" (eip_val)
-    );
-    printf("  EIP: %p\n", eip_val);
-}
-
-int main2() {
-    pip2();
-    printf("Start\n");
-    foo();
-    pip2();
-    longjmp(&env, 0); // Zurück zum setjmp-Aufruf
-    pip2();
-    printf("End\n");
-    return 0;
-}
-
 
 void execute_command(char *input) {
     int cursor = get_cursor();
@@ -743,7 +588,8 @@ void execute_command(char *input) {
     CALL_FUNCTION(snt)
     CALL_FUNCTION(sne)
     CALL_FUNCTION(pip)
-    CALL_FUNCTION(main2)
+    CALL_FUNCTION(restart)
+    CALL_FUNCTION(main_c)
     CALL_FUNCTION_WITH_2ARGS(beep)
     CALL_FUNCTION(dtmf)
     CALL_FUNCTION(editor_main)

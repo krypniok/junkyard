@@ -34,8 +34,8 @@ const char *sc_name[] = {"ERROR", "Esc", "1", "2", "3", "4", "5", "6",
                          "UP_ARROW", "DOWN_ARROW", "LEFT_ARROW", "RIGHT_ARROW"};
 
 const char sc_ascii[] = {'?', '?', '1', '2', '3', '4', '5', '6',
-                         '7', '8', '9', '0', '-', '=', '?', '?', 'q', 'w', 'e', 'r', 't', 'z',
-                         'u', 'i', 'o', 'p', '[', ']', '?', '?', 'a', 's', 'd', 'f', 'g',
+                         '7', '8', '9', '0', '-', '=', '\b', '?', 'q', 'w', 'e', 'r', 't', 'z',
+                         'u', 'i', 'o', 'p', '[', ']', '\n', '?', 'a', 's', 'd', 'f', 'g',
                          'h', 'j', 'k', 'l', ';', '\'', '`', '?', '\\', 'y', 'x', 'c', 'v',
                          'b', 'n', 'm', ',', '.', '/', '?', '?', '?', ' ', '?', '?', '?',
                          '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?', '?',
@@ -102,3 +102,47 @@ unsigned char getkey() {
     return scancode;
 }
 
+// Warten auf einen Tastendruck und Rückgabe des ASCII-Werts
+char getch() {
+    while (1) {
+        uint8_t scancode = getkey();
+        
+        // Überprüfen, ob die Taste gedrückt wurde (Bit 0 ist gesetzt)
+        if (scancode & 0x80) {
+            // Taste wurde losgelassen, ignorieren und weiter warten
+        } else {
+            // Taste wurde gedrückt, gibt den ASCII-Wert zurück
+            if (scancode < sizeof(sc_ascii)) {
+                return sc_ascii[scancode];
+            } else {
+                // Wenn der Scancode nicht im Array ist, gib ein Fragezeichen zurück
+                return '?';
+            }
+        }
+    }
+}
+
+// Lesen einer Zeichenfolge (bis Enter) von der Tastatur
+void gets(char *buffer, int buffer_size) {
+    int index = 0;
+    
+    while (1) {
+        char c = getch();
+        printf("%c", c);
+        
+        if (c == '\n') {
+            // Enter-Taste wurde gedrückt, beende die Zeichenfolgeneingabe
+            buffer[index] = '\0';
+            return;
+        } else if (c == '\b' && index > 0) {
+            // Backspace-Taste wurde gedrückt, lösche das letzte Zeichen im Puffer
+            index--;
+            buffer[index] = '\0';
+        } else if (c >= ' ' && index < (buffer_size - 1)) {
+            // Füge das Zeichen dem Puffer hinzu, wenn es druckbar ist und der Puffer nicht voll ist
+            buffer[index] = c;
+            index++;
+            buffer[index] = '\0';
+        }
+    }
+}

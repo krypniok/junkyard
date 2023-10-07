@@ -3,9 +3,9 @@
 # $^ = all dependencies
 
 # detect all .o files based on their .c source
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c stdlibs/*.c programs/*.c)
-HEADERS = $(wildcard kernel/*.h  drivers/*.h cpu/*.h stdlibs/*.h programs/*.h)
-OBJ_FILES = ${C_SOURCES:.c=.o cpu/interrupt.o}
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c stdlibs/*.c programs/*.c programs/dobby/*.c)
+HEADERS = $(wildcard kernel/*.h  drivers/*.h cpu/*.h stdlibs/*.h programs/*.h programs//dobby/*.h)
+OBJ_FILES = ${C_SOURCES:.c=.o cpu/interrupt.o cpu/setjmp.o cpu/longjmp.o}
 
 # First rule is the one executed when no parameters are fed to the Makefile
 all: run
@@ -47,7 +47,7 @@ debug: os-image.bin kernel.elf
 	gdb -ex "target remote localhost:1234" -ex "symbol-file kernel.elf"
 
 %.o: %.c ${HEADERS}
-	gcc -Wno-implicit-function-declaration -Wno-overflow -fno-PIC -nostdlib --no-pie -m32 -ffreestanding $(CFLAGS) -c $< -o $@ # -g for debugging
+	gcc -Wno-implicit-function-declaration -Wno-overflow -fno-PIC -nostdlib --no-pie -m32 -ffreestanding $(CFLAGS) -c $< -o $@
 
 %.o: %.asm
 	nasm $< -f elf -o $@
