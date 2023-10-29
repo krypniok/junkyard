@@ -1,0 +1,40 @@
+Ob rndmovie.bat funktioniert kann ich selbst nicht testen.
+
+Suche nach INSTALLATION auf der Seite:
+https://github.com/yt-dlp/yt-dlp
+
+Klar: Windows X64
+Hat zwar nichts mit diesem Skript zu tun ist aber trotzdem der beste Youtube und andere Streaming (_P) Anbieter Downloader.
+
+Installiere FFMPEG:
+https://www.gyan.dev/ffmpeg/builds/
+
+Zum konvertieren und auslesen von Metadaten eines Videos. Für dieses Skript, nur um die länge auszulesen.
+
+Installiere MPV:
+https://sourceforge.net/projects/mpv-player-windows/files/64bit-v3/
+
+Ein netter Komandozeilengetriebener Videoplayer.
+
+
+Wechsel in das Verzeichniss in dem du alle deine Videotheke hast, kann auch Unterverzeichnisse enthalten.
+
+Beispiel:
+
+C:\Videos\
+          \Musik
+          \Filme
+          \Sonstiges
+
+cd C:\Videos
+
+rufe dann das Skript auf, wo auch immer es liegt.
+
+Beispiel:
+
+C:\Benutzer\Downloads\rndmovie_windows.bat
+
+Abbrechen geht nur mit CTRL-C banging.
+
+
+
