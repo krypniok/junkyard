@@ -1,11 +1,11 @@
-
 typedef struct {
     unsigned int textureID;
-    unsigned int size_x;
-    unsigned int size_y;
-    unsigned int bearing_x;
-    unsigned int bearing_y;
-    unsigned int advance;
+    int size_x;
+    int size_y;
+    int bearing_x;
+    int bearing_y;
+    int advance;
+    int height;
 } glftCharacter;
 
 typedef struct {
@@ -14,9 +14,14 @@ typedef struct {
     glftCharacter characters[128];
 } glftFont;
 
-
-
 bool glftSetCurrentFont(glftFont* font);
 glftFont* glftLoadFont(char* filename, int fontsize);
-void glftRenderText(const char* text, float x, float y, float scale, int r, int g, int b);
+
+void glftRenderChar(char c, float x, float y, float scale, float rotation);
+
+void glftRenderText(const char* text, float x, float y, float scale, unsigned char r, unsigned char g, unsigned char b);
+
 int glftMeasureString(const char* text, float scale);
+void glftCleanup();
+void glftRenderRainbowText(const char* text, float x, float y, float scale, float time);
+void glftRenderMovingRainbowText(const char* text, float xOffset, float yOffset, float scale, float time);

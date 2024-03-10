@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
+
 #include <GLFW/glfw3.h>
 
 #include "glftRenderString.h"
@@ -13,6 +15,27 @@ void processInput(GLFWwindow *window) {
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
+}
+
+void drawLine() {
+    glLoadIdentity();
+    glColor3f(1, 1, 1);
+    glBegin(GL_LINES);
+    glVertex2f(10.0f, 10.0f);
+    glVertex2f(790.0f, 590.0f);
+    glEnd();
+}
+
+void gluiRenderRect() {
+    glLoadIdentity();
+    glColor3f(1, 0, 0);
+    glDisable(GL_TEXTURE_2D);
+    glBegin(GL_QUADS);
+    glVertex2f(10.0f, 10.0f);
+    glVertex2f(790.0f, 10.0f);
+    glVertex2f(790.0f, 590.0f);
+    glVertex2f(10.0f, 590.0f);
+    glEnd();
 }
 
 int main() {
@@ -34,12 +57,12 @@ int main() {
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_BLEND);
-    glEnable(GL_TEXTURE_2D);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   // glEnable(GL_CULL_FACE);
+   // glEnable(GL_BLEND);
+   // glEnable(GL_TEXTURE_2D);
+   // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glftFont* dejavu = glftLoadFont("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 12);
+    glftFont* dejavu = glftLoadFont("Arial.ttf", 16);
     glftSetCurrentFont(dejavu);
 
      while (!glfwWindowShouldClose(window)) {
@@ -47,30 +70,32 @@ int main() {
 
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        glEnable(GL_TEXTURE_2D);
-        glEnable(GL_BLEND);
+       // glEnable(GL_TEXTURE_2D);
+      //  glEnable(GL_BLEND);
 
         int win_width, win_height;
         glfwGetFramebufferSize(window, &win_width, &win_height);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glOrtho(0, win_width, 0, win_height, -1, 1);
+        //glOrtho(0, 800, 0, 600, 0, 1);
+        glOrtho(0, 800, 600, 0, 0, 1);
+
         glMatrixMode(GL_MODELVIEW);
 
+        const char *asciiString = " !\"#$%&'()*+,-./0123456789:;<=>?@"
+                              "ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`"
+                              "abcdefghijklmnopqrstuvwxyz{|}~\x7F";
+ 
+        glftRenderText(asciiString, 0.0f, 0.0f, 1.0f, 255, 255, 255);
+        glftRenderText(dejavu->font_name, 0.0f, 16.0f, 1.0f, 0, 255, 0);
 
-        glLoadIdentity(); // Zurücksetzen der Modelview-Matrix
+       // gluiRenderRect();
 
-        glPushMatrix(); // Speichern der aktuellen Matrix
-        glLoadIdentity(); // Zurücksetzen der Texturmatrix
-
-
-        glColor3f(1.0f, 1.0f, 1.0f);
-        glftRenderText("This is sample text", 25.0f, 575.0f, 1.0f, 1, 1, 1);
-   
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
+    glftCleanup();
     glfwTerminate();
     return 0;
 }
