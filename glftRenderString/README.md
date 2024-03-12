@@ -1,5 +1,7 @@
 # OpenGL FreeType Text Rendering
 
+![Ein Screenshot des Projekts](screenshot.png)
+
 Dieses Projekt implementiert eine einfache Textrendering-Funktion für OpenGL mithilfe von FreeType und GLFW.
 
 ## Funktionalitäten

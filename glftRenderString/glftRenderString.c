@@ -140,6 +140,9 @@ void glftRenderCharRotated(char c, float x, float y, float scale, float rotation
     // Translate back to the character's original position
     glTranslatef(half_w, half_h, 0.0f);
 
+    // Enable blending for transparency
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
     // Bind texture and render the quad
     glBindTexture(GL_TEXTURE_2D, ch.textureID);
@@ -150,6 +153,7 @@ void glftRenderCharRotated(char c, float x, float y, float scale, float rotation
         glTexCoord2f(0, 1); glVertex2f(0, h);
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_BLEND);
 
     // Pop the modelview matrix from the stack
     glPopMatrix();
