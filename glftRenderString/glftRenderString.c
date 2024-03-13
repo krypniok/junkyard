@@ -115,7 +115,7 @@ void glftRenderCharRotated(char c, float x, float y, float scale, float rotation
     float xpos = x + bearing_x;
     float ypos = y - (ch.size_y - ch.bearing_y + (ch.height/64)) * scale;
     ypos += ch.size_y - ch.bearing_y;
-    ypos += 16;
+    ypos += half_h;
 
     // Push the current modelview matrix onto the stack
     glPushMatrix();

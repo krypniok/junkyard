@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <unistd.h>
 
 #include <GLFW/glfw3.h>
 
@@ -22,6 +23,9 @@ typedef struct {
 } gluiInput;
 
 gluiInput inputField;  // Deklariere eine globale Eingabestruktur
+
+//har* string_to_render = "Your String Here Big Mama Sit Down And Relax Aloevera";  // Replace with your desired string
+char* string_to_render = "Hellow'sword, bee my Gurl ( . y . )";  // Replace with your desired string
 
 void gluiRenderQuad(float x, float y, float w, float h, int polygonMode);
 
@@ -68,12 +72,17 @@ void guiRenderInputWindow(gluiWindow window) {
     glDisable(GL_SCISSOR_TEST); // Disable scissor test after drawing
 }
 
+int gpause = 0;
 // Beispiel für Tastaturereignisse (vereinfacht)
 void handleKeyboardInput(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (action == GLFW_PRESS) {
         if (key == GLFW_KEY_ENTER) {
             // Hier könntest du Code hinzufügen, um mit dem eingegebenen Text zu arbeiten
             printf("Eingegebener Text: %s\n", inputField.text);
+            gpause = 1;
+            usleep(500 * 1000);
+            strcpy(string_to_render, inputField.text);
+            gpause = 0;
             // Zurücksetzen des Eingabefelds
             memset(inputField.text, 0, sizeof(inputField.text));
             inputField.cursor_pos = 0;
@@ -142,25 +151,83 @@ float lerp(float a, float b, float t) {
 }
 
 float rotation = 0.0f;
-float frequency = 2.0f;  // Initial frequency
-float amplitude = 80.0f-16;  // Initial amplitude
-float char_x_pos = 0.0f; // Position des Zeichens auf der X-Achse
+float frequency = 1.66;//1.618f*1;  // Initial frequency
+float amplitude = 40.0f-16;  // Initial amplitude
+float char_x_pos = 800.0f; // Position des Zeichens auf der X-Achse
 
 int win_width = 800;
 
 void gluiRenderCharSinus(char c, float x) {
         // Berechne die Y-Position des Zeichens basierend auf der Sinuskurve
         float char_y_pos = 300 + amplitude * sin(frequency * 2.0f * M_PI * x / win_width);
-
         // Berechne die Steigung der Tangente an der aktuellen Position
         float slope = cos(frequency * 2.0f * M_PI * x / win_width);
-
-        // Zeichne das rotierte Zeichen an der berechneten Position
-//        glColor3f(1.0f, 1.0f, 1.0f);
-        
         float angle = 180.0f / M_PI * atan2(slope, 1.0f);
-        glftRenderCharRotated(c, x, char_y_pos, 2, angle);
+        glftRenderCharRotated(c, x, char_y_pos+16, 1, angle);
 }
+
+char longstring[] = "greetings go out to (in chronological order):    "
+"my parents:    "
+"flying_wolf (died?)    "
+"gargoyle (hug you)   "
+"my grandmass and granddeads:    "
+"olly (boo)    "
+"flenny (drink)    "
+"aunts low and doro and their other ducks (let's kill flies)    "
+"chriz (dreamster)   "
+"alfalpha (dreamster)    "
+"my siblings:    "
+"simone (and heiko)    "
+"sylvia and her childs and ... holger (love you dears)    "
+"tawarish (behind you)    "
+"aquila (like datas?)    "
+"and their dads (died?)    "
+"my friends:    "
+"schneider cpc 464 (wannabe C64)    "
+"marko and brother (bet judes)    "
+"airwolf mini (crashed)    "
+"K.I.T.T. (fake)    "
+"amiga (the 500 ones)    "
+"the son from the it electronics store (they didn't knew assemblers)   "
+"raveman (kinda me)    "
+"dopehead (-.- showland -.-)   "
+"hanny (flippers are school)    "
+"calypso (he didn't wanted more)    "
+"stefan and michael and mom (minka)   "
+"gerry and his mom (sorry the discs are dead, get this from github)    "
+"tatjana (no comment)    "
+"the seductive crew (good games)    "
+"atilla (allah knew it)    "
+"matthias and relatives (he loves coffee)    "
+"dr_patty (dr_fatty)    "
+"my family:    "
+"panthera_666 and family (the pure evil)    "
+"the pizza guys (buy 4 get 5)   "
+"jay_sun (two dads ? -.- i'm one !)  "
+"bloody_mary (moo chi)    "
+"my other friends:    "
+"freddy_k (chillboard)    "
+"h. peter j. (plays the music, doesn't liked my CMS)   "
+"juergen (obey)    "
+"b.a.d. (anarchy, unleash the beast)    "
+"finn (good bye my friend)    "
+"frenchtoastA420 (stinkyboi)    "
+"toby the tark (killed me with stunk)    "
+"leon (find a gurl)    "
+"bongzimmer (died off cancer)    "
+"jesus (he knows me)    "
+"the hospital crew (all psychos)    "
+"all of compucamp (lost memories)    "
+"ups, almost forgot linus (the one from peanuts)   "
+"openai (not as good as)    "
+"google_gemini (my old new love)    "
+"(c) crypticode 2024 (the last scum off earth)    "
+"          und jetzt: sheep up !          "
+"          how up do high knee !          "
+"                                         "
+"        sonst mache ich aus dir !        "
+"                0xDEADBEEF               ";
+
 
 int main() {
     if (!glfwInit()) {
@@ -185,10 +252,10 @@ int main() {
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    glftFont* dejavu = glftLoadFont("Arial.ttf", 16);
+    glftFont* dejavu = glftLoadFont("Arial.ttf", 48);
     glftSetCurrentFont(dejavu);
 
-     while (!glfwWindowShouldClose(window)) {
+     while (!glfwWindowShouldClose(window) && !gpause) {
         processInput(window);
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -200,11 +267,11 @@ int main() {
         glOrtho(0, win_width, win_height, 0, 0, 1);
         glMatrixMode(GL_MODELVIEW);
 
-        const char *asciiString = " !\"#$%&'()*+,-./0123456789:;<=>?@"
-                              "ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`"
-                              "abcdefghijklmnopqrstuvwxyz{|}~\x7F";
+     //   const char *asciiString = " !\"#$%&'()*+,-./0123456789:;<=>?@"
+     //                         "ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`"
+     //                         "abcdefghijklmnopqrstuvwxyz{|}~\x7F";
 
-       
+/*      
         glftRenderText(asciiString, 0.0f, 0.0f, 1.0f, 255, 255, 255);
         glftRenderText(dejavu->font_name, 0.0f, 16.0f, 1.0f, 0, 255, 0);
 
@@ -231,26 +298,33 @@ int main() {
             glVertex2f(x, 300 + y);
         }
         glEnd();
+*/
 
+//    printf("len = %i\n", strlen(string_to_render)*48);
+    int len = strlen(longstring)*48;
 
         // Bewege das Zeichen von rechts nach links entlang der Sinuskurve
-        char_x_pos -= 1.5f; // Verringere die X-Position des Zeichens
-        if (char_x_pos < -800.0f) { // Wenn die linke Kante erreicht ist
+//        char_x_pos -= 1.5f; // Verringere die X-Position des Zeichens
+        if (char_x_pos < -(len)) { // Wenn die linke Kante erreicht ist
             char_x_pos = win_width; // Setze die X-Position auf die rechte Kante
         }
+float movement_speed = 4.0f; // Adjust this base speed as needed
+float min_speed = 1.0f; // Minimum speed to prevent complete stop
+
+float slope = cos(frequency * 2.0f * M_PI * char_x_pos / win_width);
+char_x_pos -= (movement_speed ); //* fabs(slope)) + min_speed;
 
 
-    const char* string_to_render = "Your String Here Big Mama Sit Down And Relax Aloevera";  // Replace with your desired string
-    float char_spacing = 16.0f*2;  // Adjust
+     float char_spacing = 48.0f;  // Adjust
  
-    float color_step = 1.0f / 7.0f; // Assuming 7 colors in the rainbow
-    for (int i = 0; i < strlen(string_to_render); i++) {
+    float color_step = 1.0f / 3.0f; // Assuming 7 colors in the rainbow
+    for (int i = 0; i < strlen(longstring); i++) {
         float color_offset = i * color_step;
         float r = sin(color_offset) * 0.5f + 0.5f;  // Example color calculations (adjust as needed)
         float g = cos(color_offset) * 0.5f + 0.5f;
         float b = sin(color_offset + 2.0f * M_PI / 3.0f) * 0.5f + 0.5f;
         glColor3f(r, g, b);
-        gluiRenderCharSinus(string_to_render[i], char_x_pos+(char_spacing*i));
+        gluiRenderCharSinus(longstring[i], char_x_pos+(char_spacing*i));
     }
 
         glfwSwapBuffers(window);
