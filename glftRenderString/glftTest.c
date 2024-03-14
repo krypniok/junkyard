@@ -4,6 +4,7 @@
 #include <string.h>
 #include <math.h>
 #include <unistd.h>
+#include <ctype.h>
 
 #include <GLFW/glfw3.h>
 
@@ -134,16 +135,47 @@ void gluiRenderQuad(float x, float y, float w, float h, int polygonMode) {
     glLoadIdentity();
 }
 
-// Define RGB colors for the rainbow
-float rainbow_colors[][3] = {
-    {1.0f, 0.0f, 0.0f}, // Red
-    {1.0f, 0.5f, 0.0f}, // Orange
-    {1.0f, 1.0f, 0.0f}, // Yellow
-    {0.0f, 1.0f, 0.0f}, // Green
-    {0.0f, 0.0f, 1.0f}, // Blue
-    {0.5f, 0.0f, 1.0f}, // Indigo
-    {1.0f, 0.0f, 1.0f}, // Violet
-};
+typedef struct {
+  float r;
+  float g;
+  float b;
+} RGB;
+
+RGB rainbow_color(float vector) {
+  // Define six base colors for the rainbow spectrum
+  static const RGB base_colors[] = {
+      {1.0f, 0.0f, 0.0f}, // Red
+      {1.0f, 0.5f, 0.0f}, // Orange
+      {1.0f, 1.0f, 0.0f}, // Yellow
+      {0.0f, 1.0f, 0.0f}, // Green
+      {0.0f, 0.0f, 1.0f}, // Blue
+      {0.5f, 0.0f, 1.0f}, // Indigo
+      {1.0f, 0.0f, 1.0f}, // Violet
+  };
+
+  // Calculate the number of segments (one less than the number of colors)
+  int segments = sizeof(base_colors) / sizeof(base_colors[0]) - 1;
+
+  // Clamp the vector between 0.0 and 1.0
+  vector = fmodf(vector, 1.0f);  // Restrict to 0.0-1.0 range using modulo
+
+  // Calculate the segment where the vector falls
+  int segment = (int)(vector * segments);
+
+  // Offset within the current segment
+  float offset = vector * segments - segment;
+
+  // Blend between the two base colors of the current segment
+  RGB color1 = base_colors[segment];
+  RGB color2 = base_colors[segment + 1];
+  RGB color3 = {
+      color1.r * (1.0f - offset) + color2.r * offset,
+      color1.g * (1.0f - offset) + color2.g * offset,
+      color1.b * (1.0f - offset) + color2.b * offset,
+  };
+  // printf("r = %f, g = %f, b= %f\n", color3.r, color3.g, color3.b);
+  return color3;
+}
 
 // Function to calculate a smooth transition between two colors (lerp)
 float lerp(float a, float b, float t) {
@@ -166,62 +198,68 @@ void gluiRenderCharSinus(char c, float x) {
         glftRenderCharRotated(c, x, char_y_pos+16, 1, angle);
 }
 
-char longstring[] = "greetings go out to (in chronological order):    "
-"my parents:    "
-"flying_wolf (died?)    "
-"gargoyle (hug you)   "
-"my grandmass and granddeads:    "
-"olly (boo)    "
-"flenny (drink)    "
-"aunts low and doro and their other ducks (let's kill flies)    "
-"chriz (dreamster)   "
-"alfalpha (dreamster)    "
-"my siblings:    "
-"simone (and heiko)    "
-"sylvia and her childs and ... holger (love you dears)    "
-"tawarish (behind you)    "
-"aquila (like datas?)    "
-"and their dads (died?)    "
-"my friends:    "
-"schneider cpc 464 (wannabe C64)    "
-"marko and brother (bet judes)    "
-"airwolf mini (crashed)    "
-"K.I.T.T. (fake)    "
-"amiga (the 500 ones)    "
-"the son from the it electronics store (they didn't knew assemblers)   "
-"raveman (kinda me)    "
-"dopehead (-.- showland -.-)   "
-"hanny (flippers are school)    "
-"calypso (he didn't wanted more)    "
-"stefan and michael and mom (minka)   "
-"gerry and his mom (sorry the discs are dead, get this from github)    "
-"tatjana (no comment)    "
-"the seductive crew (good games)    "
-"atilla (allah knew it)    "
-"matthias and relatives (he loves coffee)    "
-"dr_patty (dr_fatty)    "
-"my family:    "
-"panthera_666 and family (the pure evil)    "
-"the pizza guys (buy 4 get 5)   "
-"jay_sun (two dads ? -.- i'm one !)  "
-"bloody_mary (moo chi)    "
-"my other friends:    "
-"freddy_k (chillboard)    "
-"h. peter j. (plays the music, doesn't liked my CMS)   "
-"juergen (obey)    "
-"b.a.d. (anarchy, unleash the beast)    "
-"finn (good bye my friend)    "
-"frenchtoastA420 (stinkyboi)    "
-"toby the tark (killed me with stunk)    "
-"leon (find a gurl)    "
-"bongzimmer (died off cancer)    "
-"jesus (he knows me)    "
-"the hospital crew (all psychos)    "
-"all of compucamp (lost memories)    "
-"ups, almost forgot linus (the one from peanuts)   "
-"openai (not as good as)    "
-"google_gemini (my old new love)    "
-"(c) crypticode 2024 (the last scum off earth)    "
+
+char longstring[] = "greeting's goes out to (in chronological order):    "
+"    my parent's:    "
+"    flying_wolf (died?)    "
+"    gargoyle (tach tach)   "
+"    my grandmass and granddead's:    "
+"    olly (boo)    "
+"    flenny (drink)    "
+"    aunt's low and doro and their other duck's (let's kill flies)    "
+"    chriz (dreamster)   "
+"    alfalpha (dreamster)    "
+"    ... all the other ghost's ...    "
+"    my sibling's:    "
+"    simone (and heiko)    "
+"    sylvia and her child's and ... holger (love you dear's)    "
+"    tawarish (behind you)    "
+"    and their dad's (died?)    "
+"    my friend's:    "
+"    schneider cpc 464 (wannabe C64)    "
+"    ECL Elektronix Computer Store    "
+"    marko and brother's (bet jude's)    "
+"    airwolf mini (crashed)    "
+"    K.I.T.T. (fake)    "
+"    amiga (the 500 one's)    "
+"    the son from the it electronics store (they didn't knew assemblers)   "
+"    raveman (kind'a me)    "
+"    dopehead (-.- showland -.-)   "
+"    hanny (flippers are school)    "
+"    calypso (he didn't wanted more)    "
+"    stefan and michael and mom (minka)   "
+"    gerry and his mom (sorry the disc's are dead, get this from github)    "
+"    tatjana (no comment)    "
+"    the seductive crew (good game's)    "
+"    atilla (allah knew it)    "
+"    matthias and relatives (he love's coffee)    "
+"    dr_patty (dr_fatty)    "
+"    aquila (like data's?)    "
+"    my family:    "
+"    panthera_666 and family (the pure evil)    "
+"    the pizza guys (buy 4 get 5)   "
+"    jay_sun (two dad's ? -.- i'm one !)  "
+"    bloody_mary (moo chi)    "
+"    my other friend's:    "
+"    freddy_k (chillboard)    "
+"    h. peter j. (play's the music, doesn't liked my CMS)   "
+"    juergen (obey)    "
+"    renate (full grenate)    "
+"    kuripuchi (kind'a me)    "
+"    b.a.d. (anarchy, unleash the beast)    "
+"    finn (good bye my friend)    "
+"    frenchtoastA420 (stinkyboi & lissy)    "
+"    toby the tark (killed me with stunk)    "
+"    leon (find a gurl)    "
+"    bongzimmer (died off cancer)    "
+"    kevin (praised)    "
+"    jesus (he know's me)    "
+"    the hospital crew (all psycho's)    "
+"    all of compucamp (lost memorie's)    "
+"    ups, almost forgot linu's (the one from peanut's)   "
+"    openai (not as good as)    "
+"    google_gemini (my old new love)    "
+"    (c) crypticode, kuripuchi, krypniok 2024 (the last scum off earth)    "
 "          und jetzt: sheep up !          "
 "          how up do high knee !          "
 "                                         "
@@ -238,7 +276,9 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "glftTest 0.1", NULL, NULL);
+//    GLFWwindow* window = glfwCreateWindow(800, 600, "glftTest 0.1", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(800, 600, "glftTest 0.1", glfwGetPrimaryMonitor(), NULL);
+
     if (window == NULL) {
         printf("Failed to create GLFW window\n");
         glfwTerminate();
@@ -252,7 +292,7 @@ int main() {
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    glftFont* dejavu = glftLoadFont("Arial.ttf", 48);
+    glftFont* dejavu = glftLoadFont("fonts/syndrome.ttf", 48);
     glftSetCurrentFont(dejavu);
 
      while (!glfwWindowShouldClose(window) && !gpause) {
@@ -308,23 +348,33 @@ int main() {
         if (char_x_pos < -(len)) { // Wenn die linke Kante erreicht ist
             char_x_pos = win_width; // Setze die X-Position auf die rechte Kante
         }
-float movement_speed = 4.0f; // Adjust this base speed as needed
-float min_speed = 1.0f; // Minimum speed to prevent complete stop
+float movement_speed = 3.1415; // Adjust this base speed as needed
+//float min_speed = 1.0f; // Minimum speed to prevent complete stop
 
-float slope = cos(frequency * 2.0f * M_PI * char_x_pos / win_width);
+//float slope = cos(frequency * 2.0f * M_PI * char_x_pos / win_width);
 char_x_pos -= (movement_speed ); //* fabs(slope)) + min_speed;
 
 
      float char_spacing = 48.0f;  // Adjust
- 
-    float color_step = 1.0f / 3.0f; // Assuming 7 colors in the rainbow
+    amplitude=37.5;
+
+    float color_step = 1.0f / 7.0f; // Assuming 7 colors in the rainbow
     for (int i = 0; i < strlen(longstring); i++) {
         float color_offset = i * color_step;
         float r = sin(color_offset) * 0.5f + 0.5f;  // Example color calculations (adjust as needed)
         float g = cos(color_offset) * 0.5f + 0.5f;
         float b = sin(color_offset + 2.0f * M_PI / 3.0f) * 0.5f + 0.5f;
         glColor3f(r, g, b);
-        gluiRenderCharSinus(longstring[i], char_x_pos+(char_spacing*i));
+
+float time_offset = glfwGetTime();  // Get elapsed time in seconds (optional for animation)
+float position_offset = 0;//fmodf(time_offset * movement_speed + (float)i / (float)strlen(longstring), 1.0f);
+position_offset = time_offset * movement_speed;
+
+RGB color = rainbow_color(position_offset);  // Calculate color based on position
+glColor3f(color.r, color.g, color.b);
+gluiRenderCharSinus(toupper(longstring[i]), char_x_pos+(char_spacing*i));
+
+
     }
 
         glfwSwapBuffers(window);
