@@ -1,9 +1,3 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warnung: Bissiger als Junkyard-Hunde</title>
     <style>
         .warning {
             width: 400px;
@@ -44,7 +38,6 @@
 
         }
     </style>
-</head>
 <body>
     <div class="warning">
         <div class="top">
@@ -56,5 +49,3 @@
             <h2>DAWG</h2>
         </div>
     </div>
-</body>
-</html>
