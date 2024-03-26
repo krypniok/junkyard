@@ -1,6 +1,6 @@
-<center>
+<div align="center">
 ![](beware.png)
-</center>
+</div>
 <br>
 
 ![](shitbuild.gif)
