@@ -1,6 +1,8 @@
+<center>
 ![](beware.png)
 <br>
 ![](shitbuild.gif)
+</center>
 
 What i've used:<br>
 sudo apt install ffmpeg gifsicle
